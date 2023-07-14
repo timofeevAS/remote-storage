@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Файлы SND GROUP</title>
+</head>
+<body>
+    <h1>Загрузка файла</h1>
+    {% if success_message %}
+        <p>{{ success_message }}</p>
+    {% endif %}
+
+    <form action="/users/files/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="file" />
+        <input type="submit" value="Загрузить">
+    </form>
+    <h1>Список файлов</h1>
+    <ul>
+        {% for myfile in files %}
+            <li>
+                <a href="{{ myfile.file.url }}">{{ myfile.file.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
