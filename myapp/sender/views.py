@@ -4,6 +4,9 @@ from django.http import HttpResponseRedirect
 
 
 def user_files(request):
+    '''
+    View render for upload and download files into site.
+    '''
     success_message = None
     my_files = MyFile.objects.all()
 
