@@ -2,6 +2,11 @@ from django.shortcuts import render
 from .models import MyFile
 from django.http import HttpResponseRedirect
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from .serializers import FileSerializer
 
 def user_files(request):
     '''
@@ -33,3 +38,12 @@ def user_files(request):
 
     return render(request, 'files.html', {'success_message': success_message, 'files': my_files})
 
+
+class FileListView(APIView):
+    '''
+    GET method for filelist
+    '''
+    def get(self, request):
+        files = MyFile.objects.all()
+        serializer = FileSerializer(files, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
