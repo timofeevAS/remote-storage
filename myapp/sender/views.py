@@ -1,4 +1,6 @@
 from django.shortcuts import render
+
+from .forms import FileUploadForm
 from .models import MyFile
 from django.http import HttpResponseRedirect
 
@@ -21,22 +23,28 @@ def user_files(request):
     '''
     success_message = None
     my_files = MyFile.objects.all()
-
+    form = FileUploadForm()
     if request.method == 'POST':
-        file = request.FILES.get('file')
+        form = FileUploadForm(request.POST, request.FILES)
 
         superuser = User.objects.get(is_superuser=True, username='admin')
 
-        if file:
-            try:
-                obj, created = MyFile.objects.update_or_create(
-                    file=file,
-                    name=file.name,
-                    size=file.size,
-                    owner=superuser)
-                success_message = 'Файл загружен'
-            except:
-                success_message = 'Ошибка загрузки файла'
+        if form.is_valid():
+            file = request.FILES.get('file')
+            # Convert file.size to MB
+            file_size_mb = file.size / (1024 ** 2)
+            if file_size_mb < 5:
+                try:
+                    obj, created = MyFile.objects.update_or_create(
+                        file=file,
+                        name=file.name,
+                        size=file_size_mb,
+                        owner=superuser)
+                    success_message = 'Файл загружен'
+                except:
+                    success_message = 'Ошибка загрузки файла'
+            else:
+                success_message = 'Файл не загружен. Размер превышает 5 МБ!'
 
             # save session and remove post data
             request.session['success_message'] = success_message
@@ -51,7 +59,7 @@ def user_files(request):
     if 'success_message' in request.session:
         success_message = request.session.pop('success_message')
 
-    return render(request, 'files.html', {'success_message': success_message, 'files': my_files})
+    return render(request, 'files.html', {'success_message': success_message, 'files': my_files,'form':form})
 
 
 class FileListView(APIView):
