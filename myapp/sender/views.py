@@ -6,7 +6,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from django.contrib.auth.models import User
+
 from .serializers import FileSerializer
+
+
+def index(request):
+    return render(request, 'index.html')
+
 
 def user_files(request):
     '''
@@ -18,10 +25,18 @@ def user_files(request):
     if request.method == 'POST':
         file = request.FILES.get('file')
 
+        superuser = User.objects.get(is_superuser=True, username='admin')
+
         if file:
-            myfile = MyFile(file=file, name=file.name)
-            myfile.save()
-            success_message = 'Файл загружен'
+            try:
+                obj, created = MyFile.objects.update_or_create(
+                    file=file,
+                    name=file.name,
+                    size=file.size,
+                    owner=superuser)
+                success_message = 'Файл загружен'
+            except:
+                success_message = 'Ошибка загрузки файла'
 
             # save session and remove post data
             request.session['success_message'] = success_message
@@ -43,6 +58,7 @@ class FileListView(APIView):
     '''
     GET method for filelist
     '''
+
     def get(self, request):
         files = MyFile.objects.all()
         serializer = FileSerializer(files, many=True)

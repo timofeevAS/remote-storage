@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'sender',
     'rest_framework',
     'corsheaders',
+    'webpack_loader'
 ]
 
 MIDDLEWARE = [
@@ -71,7 +72,8 @@ ROOT_URLCONF = 'myapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+				# DIRS should be configured properly
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'client')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,8 +135,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "client"),
+]
 
-#our media url
+# Django webpack config
+WEBPACK_LOADER = {
+	'DEFAULT': {
+		'BUNDLE_DIR_NAME': 'bundles/',
+		'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+	}
+}
+
+# Our media url
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 ALLOWED_FILE_TYPES=['pdf','txt']
