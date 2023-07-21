@@ -53,14 +53,33 @@ function App() {
     <div className="App">
       <h1>File Cards</h1>
       <Container>
-        <Row>
-          {fileData.map((file, index) => (
-            <React.Fragment key={index}>
-              <Col md={2}>
-                {index}
-              </Col>
-            </React.Fragment>
-          ))}
+       <Row xs={1} sm={2} lg={3}>
+            {fileData.map((file, index) => (
+             <Col key={index} >
+              <div  className="FileCard">
+
+              <div className="Extension" style={{ color: getColorByExtension(file.extension) }}>
+                {file.extension.toUpperCase()}
+              </div>
+
+              <div className="FileName">
+                <h3>{file.name}</h3>
+              </div>
+
+              <div className="DeleteButtonContainer">
+                <FontAwesomeIcon icon={faTrashCan} className="DeleteButton" />
+              </div>
+
+              <div className="DownloadButtonContainer">
+              <a href= { apiURL+file.url } download
+              target="_blank"
+              rel="noreferrer">
+                <FontAwesomeIcon icon={faDownload} className="DownloadIcon" />
+              </a>
+              </div>
+            </div>
+           </Col>
+        ))}
         </Row>
       </Container>
     </div>

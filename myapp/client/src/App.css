@@ -1,15 +1,19 @@
+:root{
+    --heigth-of-box:30px;
+}
 body {
     background-color: #f5f5f5;
   }
 .App {
     text-align: center;
     margin-top: 50px;
+    font-family: 'Roboto', sans-serif;
   }
-
+  
   .FileCard {
     position: relative;
     border: 1px solid #ccc;
-    padding:  30px;
+    padding:  var(--heigth-of-box) 100px;
     margin: 20px;
     display: inline-block;
     border-radius: 10px;
@@ -22,16 +26,16 @@ body {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
   }
-
+  
   .Extension {
     position: absolute;
     top:15px;
     left:15px;
     font-size: 20px;
     font-weight: bold;
-
+    
   }
-
+  
   .FileName {
     width: 100%;
     white-space: nowrap;
@@ -50,7 +54,7 @@ body {
     cursor: pointer;
     transition: color 0.3s ease;
   }
-
+  
   .DownloadIcon:hover {
     color: #0056b3;
   }
@@ -60,7 +64,7 @@ body {
     top: 15px;
     right: 15px;
   }
-
+  
   .DeleteButton {
     color: #007bff;
     font-size: 24px;
@@ -70,4 +74,4 @@ body {
       color: #0056b3;
     }
   }
-
+  
