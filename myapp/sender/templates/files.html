@@ -1,26 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Файлы SND GROUP</title>
-</head>
 <body>
-    <h1>Загрузка файла</h1>
-    {% if success_message %}
-        <p>{{ success_message }}</p>
-    {% endif %}
+    <title>Файлы SND GROUP</title>
 
-    <form action="/users/files/upload_page/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form }}
-        <button type="submit">Загрузить</button>
-    </form>
-    <h1>Список файлов</h1>
-    <ul>
-        {% for myfile in files %}
-            <li>
-                <a href="{{ myfile.file.url }}">{{ myfile.file.name }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+<div id="root"></div>
+    <script src="{% static 'js-bundle.js' %}"></script>
+
 </body>
 </html>

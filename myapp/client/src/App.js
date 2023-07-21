@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faTrashCan} from '@fortawesome/free-solid-svg-icons';
+import { Container, Row, Col } from 'react-bootstrap';
 
 /*
 const fileData = [
@@ -43,37 +44,25 @@ function App() {
       .catch(error => console.error(error));
   }, []);
 
-
+  function truncateFileName(fileName, maxLength) {
+    if (fileName.length <= maxLength) return fileName;
+    return fileName.slice(0, maxLength - 3) + '...';
+  }
 
   return (
     <div className="App">
       <h1>File Cards</h1>
-      {fileData.map((file, index) => (
-        <div key={index} className="FileCard">
-
-          <div className="Extension" style={{ color: getColorByExtension(file.extension) }}>
-            {file.extension.toUpperCase()}
-          </div>
-
-          <div className="FileName">
-            <h3>{file.name}</h3>
-          </div>
-
-          <div className="DeleteButtonContainer">
-            <FontAwesomeIcon icon={faTrashCan} className="DeleteButton" />
-          </div>
-
-          <div className="DownloadButtonContainer">
-          <a href= { apiURL+file.url } download
-          target="_blank"
-          rel="noreferrer">
-            <FontAwesomeIcon icon={faDownload} className="DownloadIcon" />
-          </a>
-          </div>
-
-        </div>
-
-      ))}
+      <Container>
+        <Row>
+          {fileData.map((file, index) => (
+            <React.Fragment key={index}>
+              <Col md={2}>
+                {index}
+              </Col>
+            </React.Fragment>
+          ))}
+        </Row>
+      </Container>
     </div>
   );
 }
