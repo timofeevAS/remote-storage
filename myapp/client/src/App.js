@@ -55,7 +55,7 @@ function App() {
     method: 'DELETE',
   })
     .then(response => {
-      if (response.status === 410) {
+      if (response.status === 200) {
         console.log('File removed');
         fetch('http://localhost:8000/users/files/')
           .then(response => response.json())

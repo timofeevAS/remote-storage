@@ -73,6 +73,6 @@ class FileDeleteView(APIView):
         try:
             file = MyFile.objects.get(pk=pk)
             file.delete()
-            return Response(status=status.HTTP_410_GONE)
+            return Response(status=status.HTTP_200_OK)
         except MyFile.DoesNotExist:
             return Response(body={'error':'File not found'},status=status.HTTP_404_NOT_FOUND)
