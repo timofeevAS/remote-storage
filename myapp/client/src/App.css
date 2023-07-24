@@ -32,6 +32,7 @@ body {
 
   .FileCard {
     position: relative;
+    font-size: 10px;
     border: 1px solid #ccc;
     padding:  var(--heigth-of-box) 100px;
     margin: 20px;

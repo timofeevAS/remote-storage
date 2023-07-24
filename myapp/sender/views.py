@@ -63,3 +63,16 @@ class FileListView(APIView):
         files = MyFile.objects.all()
         serializer = FileSerializer(files, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FileDeleteView(APIView):
+    '''
+    FILE Delete view.
+    '''
+    def delete(self, request, pk):
+        try:
+            file = MyFile.objects.get(pk=pk)
+            file.delete()
+            return Response(status=status.HTTP_410_GONE)
+        except MyFile.DoesNotExist:
+            return Response(body={'error':'File not found'},status=status.HTTP_404_NOT_FOUND)

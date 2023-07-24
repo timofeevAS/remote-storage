@@ -29,6 +29,11 @@ function getColorByExtension(extension) {
   }
 }
 
+function truncateFileName(fileName, maxLength) {
+  if (fileName.length <= maxLength) return fileName;
+  return fileName.slice(0, maxLength - 3) + '...';
+}
+
 
 
 function App() {
@@ -45,6 +50,29 @@ function App() {
       .catch(error => console.error(error));
   }, []);
 
+  const handleDelete = (id) => {
+  fetch(`/users/files/${id}/`, {
+    method: 'DELETE',
+  })
+    .then(response => {
+      if (response.status === 410) {
+        console.log('File removed');
+        fetch('http://localhost:8000/users/files/')
+          .then(response => response.json())
+          .then(data => {
+            setFileData(data);
+          })
+          .catch(error => console.error(error));
+      } else {
+        console.error('Error.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+};
+
+
 
 
   return (
@@ -52,7 +80,7 @@ function App() {
       <h1>File Cards</h1>
       <Container>
        <Row xs={1} sm={2} lg={3}>
-            {fileData1.map((file, index) => (
+            {fileData.map((file, index) => (
              <Col key={index} >
               <div  className="FileCard">
 
@@ -61,11 +89,11 @@ function App() {
               </div>
 
               <div className="FileName">
-                <h3>{file.name}</h3>
+                <h3 title={file.name}>{truncateFileName(file.name, 10)}</h3>
               </div>
 
               <div className="DeleteButtonContainer">
-                <FontAwesomeIcon icon={faTrashCan} className="DeleteButton" />
+                <FontAwesomeIcon icon={faTrashCan} className="DeleteButton" onClick={() => handleDelete(file.id)}/>
               </div>
 
               <div className="DownloadButtonContainer">
