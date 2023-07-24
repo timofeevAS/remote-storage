@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faTrashCan} from '@fortawesome/free-solid-svg-icons';
+import { Container, Row, Col } from 'react-bootstrap';
 
-/*
-const fileData = [
+
+
+
+const fileData1 = [
   { name: 'File 1', extension: 'txt', size: '1mb', url: 'https://example.com/file1.txt' },
   { name: 'File 2', extension: 'pdf', size: '1mb', url: 'https://example.com/file2.pdf' },
   { name: 'File 3', extension: 'jpg', size: '1mb', url: 'https://example.com/file3.jpg' },
   { name: 'File 4', extension: 'docx', size: '1mb', url: 'https://example.com/file4.docx' },
 ];
-*/
 
 function getColorByExtension(extension) {
   switch (extension) {
@@ -48,32 +50,36 @@ function App() {
   return (
     <div className="App">
       <h1>File Cards</h1>
-      {fileData.map((file, index) => (
-        <div key={index} className="FileCard">
-          
-          <div className="Extension" style={{ color: getColorByExtension(file.extension) }}>
-            {file.extension.toUpperCase()}
-          </div>
-          
-          <div className="FileName">
-            <h3>{file.name}</h3>
-          </div>
+      <Container>
+       <Row xs={1} sm={2} lg={3}>
+            {fileData1.map((file, index) => (
+             <Col key={index} >
+              <div  className="FileCard">
 
-          <div className="DeleteButtonContainer">
-            <FontAwesomeIcon icon={faTrashCan} className="DeleteButton" />
-          </div>
+              <div className="Extension" style={{ color: getColorByExtension(file.extension) }}>
+                {file.extension.toUpperCase()}
+              </div>
 
-          <div className="DownloadButtonContainer"> 
-          <a href= { apiURL+file.url } download 
-          target="_blank"
-          rel="noreferrer">
-            <FontAwesomeIcon icon={faDownload} className="DownloadIcon" />
-          </a>
-          </div>
-          
-        </div>
-        
-      ))}
+              <div className="FileName">
+                <h3>{file.name}</h3>
+              </div>
+
+              <div className="DeleteButtonContainer">
+                <FontAwesomeIcon icon={faTrashCan} className="DeleteButton" />
+              </div>
+
+              <div className="DownloadButtonContainer">
+              <a href= { apiURL+file.url } download
+              target="_blank"
+              rel="noreferrer">
+                <FontAwesomeIcon icon={faDownload} className="DownloadIcon" />
+              </a>
+              </div>
+            </div>
+           </Col>
+        ))}
+        </Row>
+      </Container>
     </div>
   );
 }
