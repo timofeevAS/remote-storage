@@ -4,14 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import { Container, Row, Col } from 'react-bootstrap';
 
-/*
-const fileData = [
+
+
+
+const fileData1 = [
   { name: 'File 1', extension: 'txt', size: '1mb', url: 'https://example.com/file1.txt' },
   { name: 'File 2', extension: 'pdf', size: '1mb', url: 'https://example.com/file2.pdf' },
   { name: 'File 3', extension: 'jpg', size: '1mb', url: 'https://example.com/file3.jpg' },
   { name: 'File 4', extension: 'docx', size: '1mb', url: 'https://example.com/file4.docx' },
 ];
-*/
 
 function getColorByExtension(extension) {
   switch (extension) {
@@ -44,17 +45,14 @@ function App() {
       .catch(error => console.error(error));
   }, []);
 
-  function truncateFileName(fileName, maxLength) {
-    if (fileName.length <= maxLength) return fileName;
-    return fileName.slice(0, maxLength - 3) + '...';
-  }
+
 
   return (
     <div className="App">
       <h1>File Cards</h1>
       <Container>
        <Row xs={1} sm={2} lg={3}>
-            {fileData.map((file, index) => (
+            {fileData1.map((file, index) => (
              <Col key={index} >
               <div  className="FileCard">
 

@@ -3,13 +3,33 @@
 }
 body {
     background-color: #f5f5f5;
+    display:block;
   }
 .App {
     text-align: center;
     margin-top: 50px;
     font-family: 'Roboto', sans-serif;
   }
-  
+
+
+  .FileCard {
+    position: relative;
+    border: 1px solid #ccc;
+    padding:  var(--heigth-of-box) 20px;
+    margin: 20px;
+    display: inline-block;
+    border-radius: 10px;
+    border-color: #cccccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f5f5f5;
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+  }
+
+
   .FileCard {
     position: relative;
     border: 1px solid #ccc;
