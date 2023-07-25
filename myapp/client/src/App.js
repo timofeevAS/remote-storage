@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faTrashCan} from '@fortawesome/free-solid-svg-icons';
-import { Container, Row, Col } from 'react-bootstrap';
-
+import { Container, Row, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 
 
 
@@ -72,12 +71,26 @@ function App() {
     });
 };
 
-
+  {/* Sorting array by param */}
+  const handleSort = (param) => {
+    const sortedData = [...fileData].sort((a, b) => {
+      if (a[param] < b[param]) return -1;
+      if (a[param] > b[param]) return 1;
+      return 0;
+    });
+    setFileData(sortedData);
+  };
 
 
   return (
     <div className="App">
       <h1>File Cards</h1>
+      <div className="SortButtons">
+        <DropdownButton id="sortDropdown" title="Сортировать по">
+          <Dropdown.Item onClick={() => handleSort('name')}>Имени</Dropdown.Item>
+          <Dropdown.Item onClick={() => handleSort('created_at')}>Дате загрузки</Dropdown.Item>
+        </DropdownButton>
+      </div>
       <Container>
        <Row xs={1} sm={2} lg={3}>
             {fileData.map((file, index) => (

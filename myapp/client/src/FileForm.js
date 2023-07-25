@@ -53,10 +53,10 @@ return (
 
         <Form.Group controlId="formFileType">
           <Form.Label>Тип файла</Form.Label>
-          <Form.Control as="select">
+          <Form.Select as="select">
             <option>Публичный файл</option>
             <option>Скрытый файл</option>
-          </Form.Control>
+          </Form.Select>
         </Form.Group>
 
         <Form.Group controlId="formFileUpload">
