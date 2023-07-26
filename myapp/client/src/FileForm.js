@@ -39,7 +39,7 @@ const FileUploadForm = () => {
   };
 
 return (
-    <Container style={{ maxWidth: '20%' }}>
+    <Container style={{ maxWidth: '50%' }}>
       <Form className="d-flex flex-column bd-highlight mb-3">
         <Form.Group controlId="formFileName">
           <Form.Label>Название файла</Form.Label>
