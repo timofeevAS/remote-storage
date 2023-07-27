@@ -1,9 +1,5 @@
-:root{
-    --heigth-of-box:50px;
-}
 body {
     background-color: #f5f5f5;
-    display:block;
   }
 .App {
     text-align: center;
@@ -13,9 +9,10 @@ body {
 
   .FileCard {
     position: relative;
-    font-size: 10px;
     border: 1px solid #ccc;
-    padding:  var(--heigth-of-box);
+    padding: 50px;
+    width: 300px;
+    height: 150px;
     margin: 20px;
     display: inline-block;
     border-radius: 10px;
