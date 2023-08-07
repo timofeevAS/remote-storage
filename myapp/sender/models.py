@@ -45,6 +45,9 @@ class ContentTypeRestrictedFileField(FileField):
 
 # Create your models here.
 
+class Task(models.Model):
+    owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
 class MyFile(models.Model):
     name = models.CharField(max_length=255)
     file = ContentTypeRestrictedFileField(upload_to='media/',
@@ -57,4 +60,6 @@ class MyFile(models.Model):
     size = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     view_amount = models.PositiveIntegerField(default=0)
+    task = models.ForeignKey(to=Task, on_delete=models.CASCADE)
+
 
