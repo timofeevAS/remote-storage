@@ -37,7 +37,7 @@ function App() {
           </Col>
           {/* Показать детали файла, если выбран файл */}
           {selectedFile && (
-            <Col md={3} style={{ maxHeight: "calc(100vh - 60px)", overflowY: "auto" }}>
+            <Col md={3} >
               <FileDetails file={selectedFile} />
             </Col>
           )}
