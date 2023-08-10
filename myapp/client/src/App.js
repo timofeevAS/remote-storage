@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Container, Row, Col } from 'react-bootstrap';
 import TopNavbar from './TopNavbar';
 import SideBarMenu from './SideBarMenu';
@@ -7,13 +7,29 @@ import FileDetails from './FileDetails'; // Import the FileDetails component her
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [fileDetailsVisible, setFileDetailsVisible] = useState(false); // Состояние видимости деталей файла
-
+  const [fileDetailsVisible, setFileDetailsVisible] = useState(false); // Currency state of fileDetails
+  const [fileData, setFileData] = useState([]);
 
   const handleSelectedFile = (file) => {
     setSelectedFile(file);
-    setFileDetailsVisible(true);
+    file === -1 ? setFileDetailsVisible(false) : setFileDetailsVisible(true);
+    console.log('APP.JS: ',selectedFile,fileDetailsVisible);
   };
+
+  useEffect(() => {
+    fetchFileData();
+  }, []);
+
+  const fetchFileData = () => {
+    fetch("http://127.0.0.1:8000/users/files/")
+      .then(response => response.json())
+      .then(data => setFileData(data))
+      .catch(error => console.error("Error fetching file data:", error));
+  };
+
+  const handleUploadSuccess = (uploadedFile) => {
+    fetchFileData();
+  }
 
   return (
     <>
@@ -21,10 +37,10 @@ function App() {
       <Container fluid>
         <Row>
           <Col md={2}>
-            <SideBarMenu />
+            <SideBarMenu handleUploadSuccess={handleUploadSuccess} />
           </Col>
           <Col md={10}>
-            {/* Оберните все содержимое, кроме меню, в отдельный div */}
+            {/* */}
             <div
               style={{
                 marginLeft: fileDetailsVisible ? "-300px" : 0, // Negative margin when details opened
@@ -35,10 +51,10 @@ function App() {
               
             </div>
           </Col>
-          {/* Показать детали файла, если выбран файл */}
-          {selectedFile && (
+          {/* Details of files if it has chosen  */}
+          {fileDetailsVisible != false && (
             <Col md={3} >
-              <FileDetails file={selectedFile} />
+              {<FileDetails file={selectedFile} />}
             </Col>
           )}
         </Row>

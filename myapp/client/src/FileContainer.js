@@ -1,8 +1,8 @@
-import React, { useState,useEffect } from "react";
-import { Container, Row, Col, Navbar, Nav } from 'react-bootstrap';
+import React, { useState,useEffect,useMemo } from "react";
+import { Container, Row, Col, Navbar, Nav, Card } from 'react-bootstrap';
 import FileCard from "./FileCard";
 import FileLine from "./FileLine";
-import { faList, faTh } from '@fortawesome/free-solid-svg-icons';
+import { faList, faTh,faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const fileData1 = [
@@ -14,7 +14,13 @@ const fileData1 = [
 ];
 
 function FileContainer({ handleSelectedFile }) {
+  console.log('FILE CONTAINER JS - render');
   const [fileData, setFileData] = useState([]);
+  const [currentIcon, setCurrentIcon] = useState(faList);
+  const [openMenu, setOpenMenu] = useState(null);
+  const [selectedFileCard, setSelectedFileCard] = useState(null);
+
+  const [infoButtonClicked, setInfoButtonState] = useState(false);
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/users/files/")
@@ -22,26 +28,23 @@ function FileContainer({ handleSelectedFile }) {
       .then(data => setFileData(data));
   }, []);
 
-  const [currentIcon, setCurrentIcon] = useState(faList);
+  const handleInfoClick = () => {
+    console.log('Clicked on Info button');
+    setInfoButtonState(!infoButtonClicked);
+    infoButtonClicked ? handleSelectedFile(selectedFileCard) : handleSelectedFile(-1);
+  }
+
+  const handleCardClick = (file) => {
+    selectedFileCard === file ? setSelectedFileCard(null) : setSelectedFileCard(file);  
+    setInfoButtonState(true);
+    console.log("Selected file: ",file.id);
+    handleSelectedFile(selectedFileCard);
+  };
 
   const handleIconClick = () => {
     setCurrentIcon(currentIcon === faList ? faTh : faList);
   };
-
-  let xsCount, smCount, lgCount;
-
-  if (currentIcon === faList) {
-    xsCount = 2;
-    smCount = 2;
-    lgCount = 3;
-  } else {
-    xsCount = 3;
-    smCount = 4;
-    lgCount = 6;
-  }
-
-  const [openMenu, setOpenMenu] = useState(null);
-
+  
   const handleMenuClick = (fileId) => {
     setOpenMenu((prevMenu) => (prevMenu === fileId ? null : fileId));
   };
@@ -49,34 +52,56 @@ function FileContainer({ handleSelectedFile }) {
   const handleMenuItemClick = (eventKey) => {
     // logic
     console.log("Menu item clicked:", eventKey);
-    const selectedFile = fileData.find((file) => file.id === openMenu);
-    handleSelectedFile(selectedFile); // callback
+    const selectedFileCard = fileData.find((file) => file.id === openMenu);
+    setSelectedFileCard(selectedFileCard);
+    handleselectedFil(selectedFileCard); // callback to FileDetails
     setOpenMenu(null);
   };
+
+  
+  const fileCards = useMemo(() => {
+    return fileData.map((file, index) => (
+      <Col key={index}>
+        {currentIcon === faList ? (
+          <FileCard 
+            file={file} 
+            handleMenuClick={handleMenuClick} 
+            openMenu={openMenu} 
+            handleMenuItemClick={handleMenuItemClick}
+            handleCardClick={handleCardClick}
+            isSelected={file === selectedFileCard}
+          />
+        ) : (
+          <FileLine 
+            file={file} 
+            handleMenuClick={handleMenuClick} 
+            openMenu={openMenu} 
+            handleMenuItemClick={handleMenuItemClick} 
+          />
+        )}
+      </Col>
+    ));
+  }, [fileData, currentIcon, openMenu, handleMenuClick, handleMenuItemClick, handleCardClick, selectedFileCard]);
+
 
   return (
     <div className="Cards">
         <Container>
-            <Nav className="justify-content-end">
-              <Nav.Item onClick={handleIconClick}>
-                <FontAwesomeIcon icon={currentIcon} />
-              </Nav.Item>
-              <Nav.Item style={{
-                position:'relative',
-                right:'1270px'//  {/* PROBLEMA */}
-              }} > Files</Nav.Item>
-            </Nav>
+            <Card style={{outline:'none',border:'none'}}>
+              <Card.Body>
+                <div style ={{ position:'absolute',right:'45px',top:'5px',color: infoButtonClicked ? 'lightblue' : 'black'}}> <FontAwesomeIcon icon={faInfoCircle} onClick={handleInfoClick} /> </div>
+                <div style ={{ position:'absolute',right:'15px',top:'5px'}}> <FontAwesomeIcon icon={currentIcon} onClick={handleIconClick}/> </div>
+                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> Files </div>
+                
+              </Card.Body>
+            </Card>
         </Container>
-      <Container>
+      <Container style = {{
+          maxHeight: '800px',
+          overflowY: 'auto'
+        }}>
         <h6>Справка: файлы и папки располагаются в этом контейнере</h6>
-        <Row  className="">
-          {fileData.map((file, index) => (
-            <Col key={index}>
-              {currentIcon === faList ? <FileCard file={file} handleMenuClick={handleMenuClick} openMenu={openMenu} handleMenuItemClick={handleMenuItemClick} /> : 
-              <FileLine file={file} handleMenuClick={handleMenuClick} openMenu={openMenu} handleMenuItemClick={handleMenuItemClick} />}
-            </Col>
-          ))}
-        </Row>
+        <Row className="">{fileCards}</Row>
       </Container>
     </div>
   );

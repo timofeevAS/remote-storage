@@ -1,8 +1,12 @@
 import React from "react";
 import { Navbar} from 'react-bootstrap';
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 const FileDetails = ({ file }) => {
+
     return (
       <div className="border p-3" 
       style= {{
@@ -21,11 +25,19 @@ const FileDetails = ({ file }) => {
           <Navbar.Brand>File Details</Navbar.Brand>
         </Navbar>
         <div style= {{backgroundColor:"#f8f8f9"}}>
-          <h2>Name: {file.name}</h2>
-          <p>Extension: {file.extension}</p>
-          <p>Id: {file.id}</p>
-          <p>Size: {file.size}</p>
-          <h6>Любая инфо о файле, мб сюда пихнуть возможность его редачить</h6>
+        {file === null || file===-1 ? (
+          <p>Выберите файл нажав на него</p>
+        ) : (
+          <>
+            <h2>Name: {file.name}</h2>
+            <p>Extension: {file.extension}</p>
+            <p>Id: {file.id}</p>
+            <p>Size: {file.size}</p>
+            <p>Task: {file.task != null ? file.task.name : "None"}</p>
+            <p>Owner: {capitalizeFirstLetter(file.owner.username)}</p>
+            <h6>Любая инфо о файле, мб сюда пихнуть возможность его редачить</h6>
+           </>
+            )} 
         </div>
       </div>
     );

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from .forms import FileUploadForm
-from .models import MyFile
+from .models import MyFile, Task
 from django.http import HttpResponseRedirect
 
 from rest_framework.views import APIView
@@ -12,9 +12,9 @@ from django.contrib.auth.models import User
 
 
 def user_files(request):
-    '''
+    """
     View render for upload and download files into site.
-    '''
+    """
     success_message = None
     my_files = MyFile.objects.all()
     form = FileUploadForm()
@@ -53,13 +53,35 @@ def user_files(request):
     return render(request, 'files.html', {'success_message': success_message, 'files': my_files, 'form': form})
 
 
+class TaskSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Task model
+    """
+
+    class Meta:
+        model = Task
+        fields = ['id', 'name', 'owner']
+
+
+class OwnerSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Owner or User
+    """
+
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
+
 class FileListSerializer(serializers.ModelSerializer):
-    '''
+    """
     Serializer for file listing
-    '''
+    """
     extension = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
+    task = TaskSerializer()
+    owner = OwnerSerializer()
 
     def get_extension(self, obj):
         return obj.name.split('.')[-1] if '.' in obj.name else ''
@@ -72,7 +94,7 @@ class FileListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyFile
-        fields = ['id', 'name', 'extension', 'url', 'size', 'view_amount', 'created_at', 'owner']
+        fields = ['id', 'name', 'extension', 'url', 'size', 'view_amount', 'created_at', 'owner', 'task']
 
 
 class FileUploadSerializer(serializers.ModelSerializer):
@@ -96,7 +118,6 @@ class FileUploadSerializer(serializers.ModelSerializer):
         else:
             extension = validated_data['file'].name.split('.')[-1] if '.' in validated_data['file'].name else ''
             name = validated_data.get('name') + '.' + extension
-
 
         try:
             my_file = MyFile.objects.create(
@@ -126,7 +147,8 @@ class FileListView(APIView):
         print(request.data['name'])
         if serializer.is_valid():
             my_file = serializer.save()
-            return Response({'message': 'File uploaded successfully.', 'file_id': my_file.id}, status=status.HTTP_201_CREATED)
+            return Response({'message': 'File uploaded successfully.', 'file_id': my_file.id},
+                            status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -60,6 +60,6 @@ class MyFile(models.Model):
     size = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     view_amount = models.PositiveIntegerField(default=0)
-    task = models.ForeignKey(to=Task, on_delete=models.CASCADE)
+    task = models.ForeignKey(to=Task, on_delete=models.CASCADE,null=True)
 
 

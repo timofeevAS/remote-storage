@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import { Card } from 'react-bootstrap';
@@ -19,36 +19,55 @@ function getColorByExtension(extension) {
   }
 }
 
-function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick }) {
+function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handleCardClick, isSelected }) {
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   
   const handleContextMenu = (event) => {
     event.preventDefault();
 
-    // Получаем координаты клика относительно окна браузера
+    // Get coords in page
     const posX = event.pageX;
     const posY = event.pageY;
 
-    // Получаем координаты карточки FileCard относительно окна браузера
+    // Get coord FileCard
     const cardRect = event.currentTarget.getBoundingClientRect();
     const cardX = cardRect.left;
     const cardY = cardRect.top;
 
-    // Вычисляем относительные координаты клика относительно карточки FileCard
+    // Calculate real coords
     const relativeX = posX - cardX;
     const relativeY = posY - cardY;
 
-    // Устанавливаем позицию контекстного меню
-    setContextMenuPosition({ x: relativeX-150, y: relativeY-18 });
-
-    // Вызываем обработчик клика по меню
+    // Set pos with offset
+     setContextMenuPosition({ x: relativeX-150, y: relativeY-18 });
+    // setContextMenuPosition({ x: relativeX, y: relativeY });
+    // handleMenuClick
     handleMenuClick(file.id);
+  };
+
+
+  useEffect(() => {
+    console.log("Mounted!");
+  }, [])
+  console.log('render');
+
+  const handleClick = () => {
+    handleCardClick(file);
+    console.log(file.id);
   };
 
 
   return (
     
-    <Card onContextMenu={handleContextMenu} style={{ width: '180px', height: '100px', borderRadius: '13px', backgroundColor: '#f8f8fa', marginBottom: '30px' }}>
+    <Card onContextMenu={handleContextMenu} onClick={handleClick} style=
+    {{ 
+      width: '180px', 
+      height: '100px', 
+      borderRadius: '13px', 
+      backgroundColor: isSelected ? "lightblue" : "#f8f8fa", 
+      marginBottom: '30px',
+      userSelect: "auto"
+     }}>
       <Card.Body className="d-flex flex-column align-items-center justify-content-center">
         <Card.Title style={{ fontSize: '25px', position: 'relative', top: '15px' }}>
           {file.name}
@@ -77,4 +96,4 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick }) {
   );
 }
 
-export default FileCard;
+export default React.memo(FileCard); 

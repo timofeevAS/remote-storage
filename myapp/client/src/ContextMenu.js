@@ -16,7 +16,7 @@ function ContextMenu({ handleMenuItemClick,position}) {
         borderRadius: "5px",
         height: "auto",
         width: "100px",
-        zIndex: "1",
+        zIndex: "1000",
       }}
     >
       <div onClick={() => handleMenuItemClick("download")}>
