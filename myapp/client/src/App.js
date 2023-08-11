@@ -9,6 +9,7 @@ function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileDetailsVisible, setFileDetailsVisible] = useState(false); // Currency state of fileDetails
   const [fileData, setFileData] = useState([]);
+  const [fetchConfig, setFetchConfig] = useState({});
 
   const handleSelectedFile = (file) => {
     setSelectedFile(file);
@@ -18,19 +19,25 @@ function App() {
 
   useEffect(() => {
     fetchFileData();
-  }, []);
+  }, [fetchConfig]); // Update fetch data, when fetchConfig edit
 
   const fetchFileData = () => {
-    fetch("http://127.0.0.1:8000/users/files/")
+    const queryString = Object.keys(fetchConfig)
+      .filter(key => fetchConfig[key] !== null) // Пропускаем null значения
+      .map(key => `${key}=${fetchConfig[key]}`)
+      .join("&");
+
+    const apiUrl = `http://127.0.0.1:8000/users/files/?${queryString}`;
+
+    fetch(apiUrl)
       .then(response => response.json())
       .then(data => setFileData(data))
       .catch(error => console.error("Error fetching file data:", error));
   };
 
   const handleUploadSuccess = (uploadedFile) => {
-    fetchFileData();
+    setFileData(prevFileData => [...prevFileData, uploadedFile]);
   }
-
   return (
     <>
       <TopNavbar />

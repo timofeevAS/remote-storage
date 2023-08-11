@@ -5,7 +5,7 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { Nav, Navbar } from "react-bootstrap";
 import UploadForm from "./UploadForm";
 
-const SideBarMenu = ({ handleUploadSuccess }) => {
+const SideBarMenu = ({ handleUploadSuccess, setFetchConfig }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);
 
   const handleUploadClick = () => {
