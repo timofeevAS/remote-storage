@@ -7,6 +7,7 @@ import UploadForm from "./UploadForm";
 
 const SideBarMenu = ({ handleUploadSuccess, setFetchConfig }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);
+  const departments = ["it", "hr", "other"];
 
   const handleUploadClick = () => {
     setShowUploadForm(true);
@@ -15,6 +16,14 @@ const SideBarMenu = ({ handleUploadSuccess, setFetchConfig }) => {
   const closeUploadForm = () => {
     setShowUploadForm(false);
   };
+
+  const handleDepartmentChange = (selectedDepartment) => {
+    setFetchConfig(prevFetchConfig => ({
+      ...prevFetchConfig,
+      department: selectedDepartment,
+    }));
+  } 
+
 
   return (
     <Nav defaultActiveKey="/home" className="flex-column">
@@ -30,11 +39,20 @@ const SideBarMenu = ({ handleUploadSuccess, setFetchConfig }) => {
       
       <div className="mb-2" style={{margin:"5px", width: "200px", height: "30px"}}>
       <h6>Разделы, задачи хранятся тут</h6>
-        <Button variant="outline-dark" size="sm" className="d-block mb-2" style={{border: "none",   width: "200px", height: "30px", textAlign: "left"}}><FontAwesomeIcon icon={faDownload} className="DeleteButton" /> IT-Department </Button>
-        <Button variant="outline-dark" size="sm" className="d-block mb-2" style={{border: "none",width: "200px", height: "30px", textAlign: "left"}}><FontAwesomeIcon icon={faDownload} className="DeleteButton" /> Marketing</Button>
-        <Button variant="outline-dark" size="sm" className="d-block mb-2" style={{border: "none",width: "200px", height: "30px",textAlign: "left"}}><FontAwesomeIcon icon={faDownload} className="DeleteButton" /> HR</Button>
-        <Button variant="outline-dark" size="sm" className="d-block mb-2" style={{border: "none",width: "200px", height: "30px",textAlign: "left"}}><FontAwesomeIcon icon={faDownload} className="DeleteButton" /> News</Button>
-        <Button variant="outline-dark" size="sm" className="d-block mb-2" style={{border: "none",width: "200px", height: "30px",textAlign: "left"}}><FontAwesomeIcon icon={faDownload} className="DeleteButton" /> Cats</Button>
+        {departments.map((department, index) => (
+          <Button
+            key={index}
+            variant="outline-dark"
+            size="sm"
+            className="d-block mb-2"
+            style={{border: "none",   width: "200px", height: "30px", textAlign: "left"}}
+            onClick={() => handleDepartmentChange(department)}
+          >
+            <FontAwesomeIcon icon={faDownload}/>
+            {department.toUpperCase()}
+            
+          </Button>
+        ))}
         
         {/* Another departments */}
       </div>

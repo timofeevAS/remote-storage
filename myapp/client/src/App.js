@@ -9,7 +9,9 @@ function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileDetailsVisible, setFileDetailsVisible] = useState(false); // Currency state of fileDetails
   const [fileData, setFileData] = useState([]);
-  const [fetchConfig, setFetchConfig] = useState({});
+  const [fetchConfig, setFetchConfig] = useState({
+    department:null
+    });
 
   const handleSelectedFile = (file) => {
     setSelectedFile(file);
@@ -23,28 +25,35 @@ function App() {
 
   const fetchFileData = () => {
     const queryString = Object.keys(fetchConfig)
-      .filter(key => fetchConfig[key] !== null) // Пропускаем null значения
+      .filter(key => fetchConfig[key] !== null)
       .map(key => `${key}=${fetchConfig[key]}`)
       .join("&");
-
+  
     const apiUrl = `http://127.0.0.1:8000/users/files/?${queryString}`;
-
+  
+    console.log("API URL:", apiUrl); // Выводим URL для отладки
+  
     fetch(apiUrl)
       .then(response => response.json())
-      .then(data => setFileData(data))
+      .then(data => {
+        console.log("Fetched data:", data); // Выводим полученные данные для отладки
+        setFileData(data);
+      })
       .catch(error => console.error("Error fetching file data:", error));
   };
+  
 
-  const handleUploadSuccess = (uploadedFile) => {
-    setFileData(prevFileData => [...prevFileData, uploadedFile]);
+  const handleUploadSuccess = () => {
+    fetchFileData();
   }
+
   return (
     <>
       <TopNavbar />
       <Container fluid>
         <Row>
           <Col md={2}>
-            <SideBarMenu handleUploadSuccess={handleUploadSuccess} />
+          <SideBarMenu handleUploadSuccess={handleUploadSuccess} setFetchConfig={setFetchConfig} />
           </Col>
           <Col md={10}>
             {/* */}
@@ -54,7 +63,7 @@ function App() {
                 transition: "margin-left 0.3s ease",
               }}
             >
-              <FileContainer handleSelectedFile={handleSelectedFile} />
+              <FileContainer handleSelectedFile={handleSelectedFile} fileData={fileData}/>
               
             </div>
           </Col>

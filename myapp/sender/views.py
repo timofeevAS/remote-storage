@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from .forms import FileUploadForm
-from .models import MyFile, Task
+from .models import *
 from django.http import HttpResponseRedirect
 
 from rest_framework.views import APIView
@@ -139,6 +139,16 @@ class FileListView(APIView):
 
     def get(self, request):
         files = MyFile.objects.all()
+
+        department_param = request.GET.get('department', None)
+
+        if department_param is not None:
+            try:
+                department_id = Department.objects.get(name=department_param)
+            except:
+                return Response({'error': 'Current department doesn\'t exist'}, status=status.HTTP_400_BAD_REQUEST)
+            files = files.filter(department=department_id)
+
         serializer = FileListSerializer(files, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

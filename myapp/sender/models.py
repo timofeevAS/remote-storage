@@ -48,6 +48,12 @@ class ContentTypeRestrictedFileField(FileField):
 class Task(models.Model):
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+
+class Department(models.Model):
+    name = models.CharField(max_length=50)
+    chief = models.ForeignKey(to=User, on_delete=models.CASCADE)
+
+
 class MyFile(models.Model):
     name = models.CharField(max_length=255)
     file = ContentTypeRestrictedFileField(upload_to='media/',
@@ -61,5 +67,7 @@ class MyFile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     view_amount = models.PositiveIntegerField(default=0)
     task = models.ForeignKey(to=Task, on_delete=models.CASCADE,null=True)
+    department = models.ForeignKey(to=Department, on_delete=models.CASCADE,null=True)
+
 
 

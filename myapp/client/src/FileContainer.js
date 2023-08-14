@@ -13,20 +13,15 @@ const fileData1 = [
   { id: '5', name: 'a', extension: 'txt', size: '1mb', url: 'https://example.com/file1.txt' },
 ];
 
-function FileContainer({ handleSelectedFile }) {
+function FileContainer({ handleSelectedFile,fileData }) {
   console.log('FILE CONTAINER JS - render');
-  const [fileData, setFileData] = useState([]);
+  
   const [currentIcon, setCurrentIcon] = useState(faList);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedFileCard, setSelectedFileCard] = useState(null);
 
   const [infoButtonClicked, setInfoButtonState] = useState(false);
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/users/files/")
-      .then(response => response.json())
-      .then(data => setFileData(data));
-  }, []);
 
   const handleInfoClick = () => {
     console.log('Clicked on Info button');
