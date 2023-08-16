@@ -6,6 +6,9 @@ export default function UploadForm({ handleUploadSuccess }) {
   const { register, handleSubmit } = useForm();
   const [responseMessage, setResponseMessage] = useState("");
 
+  
+
+
   const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
