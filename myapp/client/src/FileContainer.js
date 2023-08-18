@@ -2,7 +2,6 @@ import React, { useState,useEffect,useMemo } from "react";
 import { Container, Row, Col, Navbar, Nav, Card } from 'react-bootstrap';
 import FileCard from "./FileCard";
 import FileLine from "./FileLine";
-import UploadModal from "./UploadModal";
 import { faList, faTh,faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -37,16 +36,22 @@ function FileContainer({ handleSelectedFile,fileData }) {
 
     // Fetching
     files.forEach(async (file) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("name", file.name);
+    console.log("Dragged file: ",file.name);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("name", file.name);
   
-      const res = await fetch("http://localhost:8000/users/files/", {
-        method: "POST",
-        body: formData,
-      }).then((res) => res.json());
+    const res = await fetch("http://127.0.0.1:8000/users/files/", {
+      method: "POST",
+      body: formData,
+    }).then((res) => {
+      if (res.status === 201) {
+        console.log("Posted file: ",file.name);
+      }
+      return res.json();
+    });
   
-      setResponseMessage(`${res.message}, status: ${res.status}`);
+    setResponseMessage(`${res.message}, status: ${res.status}`);
     });
 
   };
