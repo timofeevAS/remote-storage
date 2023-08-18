@@ -2,6 +2,7 @@ import React, { useState,useEffect,useMemo } from "react";
 import { Container, Row, Col, Navbar, Nav, Card } from 'react-bootstrap';
 import FileCard from "./FileCard";
 import FileLine from "./FileLine";
+import UploadModal from "./UploadModal";
 import { faList, faTh,faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -13,16 +14,43 @@ const fileData1 = [
   { id: '5', name: 'a', extension: 'txt', size: '1mb', url: 'https://example.com/file1.txt' },
 ];
 
+
 function FileContainer({ handleSelectedFile,fileData }) {
   console.log('FILE CONTAINER JS - render');
-  
   const [currentIcon, setCurrentIcon] = useState(faList);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedFileCard, setSelectedFileCard] = useState(null);
-
   const [infoButtonClicked, setInfoButtonState] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
 
+
+  const handleDragOver = (e) => {
+    { /* Removing default browser functions */ }
+    e.preventDefault(); 
+  };
+  
+  const handleDrop = (e) => {
+    {/* Logic of dragged files */}
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files); // Array of uploaded files
+
+    // Fetching
+    files.forEach(async (file) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("name", file.name);
+  
+      const res = await fetch("http://localhost:8000/users/files/", {
+        method: "POST",
+        body: formData,
+      }).then((res) => res.json());
+  
+      setResponseMessage(`${res.message}, status: ${res.status}`);
+    });
+
+  };
+  
   const handleInfoClick = () => {
     setInfoButtonState(!infoButtonClicked);
   }
@@ -97,7 +125,7 @@ function FileContainer({ handleSelectedFile,fileData }) {
 
 
   return (
-    <div className="Cards">
+    <div onDragOver={handleDragOver} onDrop={handleDrop}>
         <Container>
             <Card style={{outline:'none',border:'none'}}>
               <Card.Body>

@@ -2,8 +2,11 @@ import random
 import string
 
 from django.core.management.base import BaseCommand
-from sender.models import MyFile,User
+
 from django.forms.models import model_to_dict
+
+from sender.models import MyFile
+
 
 def random_word(length):
     """
@@ -18,7 +21,7 @@ def populate_database(num_entries):
     Filling database
     """
     for _ in range(num_entries):
-        parent_file = MyFile.objects.get(name="aaa.txt", id="28")
+        parent_file = MyFile.objects.get(name="aaa.txt")
         random_name = "file_"+random_word(5)+".txt"
 
         obj, created = MyFile.objects.update_or_create(
