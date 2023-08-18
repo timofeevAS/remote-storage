@@ -24,17 +24,34 @@ function FileContainer({ handleSelectedFile,fileData }) {
 
 
   const handleInfoClick = () => {
-    console.log('Clicked on Info button');
     setInfoButtonState(!infoButtonClicked);
-    infoButtonClicked ? handleSelectedFile(selectedFileCard) : handleSelectedFile(-1);
   }
 
+  useEffect(() => {
+    console.log('Clicked on Info button', infoButtonClicked);
+    if (infoButtonClicked) {
+      handleSelectedFile(selectedFileCard);
+    } else {
+      handleSelectedFile(-1);
+      setSelectedFileCard(null)
+    }
+  }, [infoButtonClicked]);
+
   const handleCardClick = (file) => {
-    selectedFileCard === file ? setSelectedFileCard(null) : setSelectedFileCard(file);  
+    var selectedCardCopy = file;
+    if(selectedFileCard === file){
+      setSelectedFileCard(null)
+      selectedCardCopy = null;
+    }
+    else{
+      setSelectedFileCard(file);
+    }
     setInfoButtonState(true);
     console.log("Selected file: ",file.id);
-    handleSelectedFile(selectedFileCard);
+    handleSelectedFile(selectedCardCopy);
   };
+
+  
 
   const handleIconClick = () => {
     setCurrentIcon(currentIcon === faList ? faTh : faList);

@@ -10,14 +10,20 @@ export default function UploadForm({ handleUploadSuccess }) {
     const formData = new FormData();
     formData.append("file", data.file[0]);
     formData.append("name", data.name);
-
+  
     const res = await fetch("http://localhost:8000/users/files/", {
       method: "POST",
       body: formData,
-    }).then((res) => res.json());
-
+    }).then((res) => {
+      if (res.status === 201) {
+        handleUploadSuccess(); // Вызываем функцию при успешном создании
+      }
+      return res.json();
+    });
+  
     setResponseMessage(`${res.message}, status: ${res.status}`);
   };
+  
 
   useEffect(() => {
     if (responseMessage) {
