@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import TopNavbar from './TopNavbar';
 import SideBarMenu from './SideBarMenu';
 import FileContainer from './FileContainer';
+import FileDetailsCanvas from "./FileDetailsCanvas";
 import FileDetails from './FileDetails'; // Import the FileDetails component here
 
 function App() {
@@ -59,20 +60,20 @@ function App() {
             {/* */}
             <div
               style={{
-                marginLeft: fileDetailsVisible ? "-300px" : 0, // Negative margin when details opened
+                marginLeft: fileDetailsVisible ? "-0px" : 0, // Negative margin when details opened
                 transition: "margin-left 0.3s ease",
               }}
             >
               <FileContainer handleSelectedFile={handleSelectedFile} fileData={fileData}/>
-              
+              {/* Details of files if it has chosen  */}
+              {fileDetailsVisible != false && (
+                <Col md={3} >
+                  {<FileDetailsCanvas file={selectedFile} />}
+                </Col>
+              )}
             </div>
           </Col>
-          {/* Details of files if it has chosen  */}
-          {fileDetailsVisible != false && (
-            <Col md={3} >
-              {<FileDetails file={selectedFile} />}
-            </Col>
-          )}
+          
         </Row>
       </Container>
     </>

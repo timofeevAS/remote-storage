@@ -19,6 +19,15 @@ function getColorByExtension(extension) {
   }
 }
 
+function truncateText(text, maxLength) {
+  if (text.length <= maxLength) {
+    return text;
+  } else {
+    return text.substring(0, maxLength) + "...";
+  }
+}
+
+
 function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handleCardClick, isSelected }) {
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   
@@ -69,8 +78,8 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
       userSelect: "auto"
      }}>
       <Card.Body className="d-flex flex-column align-items-center justify-content-center">
-        <Card.Title style={{ fontSize: '25px', position: 'relative', top: '15px' }}>
-          {file.name}
+        <Card.Title style={{ fontSize: '20px', position: 'relative', top: '15px' }}>
+          {truncateText(file.name,12)}
         </Card.Title>
         <Card.Link href="#" download target="_blank" rel="noreferrer" style={{ position: 'relative', top: '12px' }}>
           <FontAwesomeIcon icon={faDownload} className="DownloadIcon" size="lg"/>
