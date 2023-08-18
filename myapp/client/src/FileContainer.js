@@ -22,8 +22,6 @@ function FileContainer({ handleSelectedFile,fileData }) {
   const [infoButtonClicked, setInfoButtonState] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-
-
   const handleDragOver = (e) => {
     { /* Removing default browser functions */ }
     e.preventDefault(); 
@@ -36,22 +34,16 @@ function FileContainer({ handleSelectedFile,fileData }) {
 
     // Fetching
     files.forEach(async (file) => {
-    console.log("Dragged file: ",file.name);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("name", file.name);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("name", file.name);
   
-    const res = await fetch("http://127.0.0.1:8000/users/files/", {
-      method: "POST",
-      body: formData,
-    }).then((res) => {
-      if (res.status === 201) {
-        console.log("Posted file: ",file.name);
-      }
-      return res.json();
-    });
+      const res = await fetch("http://localhost:8000/users/files/", {
+        method: "POST",
+        body: formData,
+      }).then((res) => res.json());
   
-    setResponseMessage(`${res.message}, status: ${res.status}`);
+      setResponseMessage(`${res.message}, status: ${res.status}`);
     });
 
   };
