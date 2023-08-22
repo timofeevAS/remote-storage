@@ -11,7 +11,8 @@ function App() {
   const [fileDetailsVisible, setFileDetailsVisible] = useState(false); // Currency state of fileDetails
   const [fileData, setFileData] = useState([]);
   const [fetchConfig, setFetchConfig] = useState({
-    department:null
+    department:null,
+    search:null
     });
 
   const handleSelectedFile = (file) => {
@@ -21,8 +22,9 @@ function App() {
   };
 
   useEffect(() => {
+    {/* Update fetch data, when fetchConfig edit */}
     fetchFileData();
-  }, [fetchConfig]); // Update fetch data, when fetchConfig edit
+  }, [fetchConfig]); 
 
   const fetchFileData = () => {
     const queryString = Object.keys(fetchConfig)
@@ -32,12 +34,12 @@ function App() {
   
     const apiUrl = `http://127.0.0.1:8000/users/files/?${queryString}`;
   
-    console.log("API URL:", apiUrl); // Выводим URL для отладки
+    console.log("API URL:", apiUrl); // Output url with fetch config
   
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
-        console.log("Fetched data:", data); // Выводим полученные данные для отладки
+        console.log("Fetched data:", data); // fetched data
         setFileData(data);
       })
       .catch(error => console.error("Error fetching file data:", error));
@@ -45,26 +47,33 @@ function App() {
   
 
   const handleUploadSuccess = () => {
+    {/* While data upload success -> fetching new data from API */}
     fetchFileData();
   }
 
+  const handleSearch = (searchQuery) => {
+    {/* Function to edit fetch config for search request */}
+    console.log('Search query is: ', searchQuery);
+    setFetchConfig({ ...fetchConfig, search: searchQuery });
+  };
+
   return (
     <>
-      <TopNavbar />
+      <TopNavbar handleSearch={handleSearch}/>
       <Container fluid>
         <Row>
-          <Col md={2}>
+          <Col md={2} className=''>
           <SideBarMenu handleUploadSuccess={handleUploadSuccess} setFetchConfig={setFetchConfig} />
           </Col>
           <Col md={10}>
             {/* */}
             <div
               style={{
-                marginLeft: fileDetailsVisible ? "-0px" : 0, // Negative margin when details opened
+                marginLeft: fileDetailsVisible ? "-500px" : 0, // Negative margin when details opened
                 transition: "margin-left 0.3s ease",
               }}
             >
-              <FileContainer handleSelectedFile={handleSelectedFile} fileData={fileData}/>
+              <FileContainer handleSelectedFile={handleSelectedFile} fileData={fileData} handleUploadSuccess={()=>handleUploadSuccess()}/>
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (
                 <Col md={3} >

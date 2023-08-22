@@ -14,22 +14,34 @@ const fileData1 = [
 ];
 
 
-function FileContainer({ handleSelectedFile,fileData }) {
+function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess }) {
   console.log('FILE CONTAINER JS - render');
   const [currentIcon, setCurrentIcon] = useState(faList);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedFileCard, setSelectedFileCard] = useState(null);
   const [infoButtonClicked, setInfoButtonState] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [draggingFile, setDraggingFile] = useState(false);
 
   const handleDragOver = (e) => {
     { /* Removing default browser functions */ }
     e.preventDefault(); 
   };
   
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    setDraggingFile(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setDraggingFile(false);
+  };
+
   const handleDrop = (e) => {
     {/* Logic of dragged files */}
     e.preventDefault();
+    setDraggingFile(false);
     const files = Array.from(e.dataTransfer.files); // Array of uploaded files
 
     // Fetching
@@ -45,7 +57,7 @@ function FileContainer({ handleSelectedFile,fileData }) {
   
       setResponseMessage(`${res.message}, status: ${res.status}`);
     });
-
+    handleUploadSuccess();
   };
   
   const handleInfoClick = () => {
@@ -122,7 +134,7 @@ function FileContainer({ handleSelectedFile,fileData }) {
 
 
   return (
-    <div onDragOver={handleDragOver} onDrop={handleDrop}>
+    <div >
         <Container>
             <Card style={{outline:'none',border:'none'}}>
               <Card.Body>
@@ -133,9 +145,15 @@ function FileContainer({ handleSelectedFile,fileData }) {
               </Card.Body>
             </Card>
         </Container>
-      <Container style = {{
+      <Container 
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      style = {{
           maxHeight: '800px',
-          overflowY: 'auto'
+          overflowY: 'auto',
+          backgroundColor: draggingFile ? '#9fc5e8' : 'transparent',
         }}>
         <h6>Справка: файлы и папки располагаются в этом контейнере</h6>
         <Row className="">{fileCards}</Row>

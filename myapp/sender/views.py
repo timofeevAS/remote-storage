@@ -1,8 +1,10 @@
+import re
+
 from django.shortcuts import render
 
 from .forms import FileUploadForm
 from .models import *
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -137,17 +139,38 @@ class FileListView(APIView):
     View for filelist
     """
 
+    def get_object_by_pk(self, MyModel, pk):
+        try:
+            return MyModel.objects.get(pk=pk)
+        except MyModel.DoesNotExist:
+            return Response({'error': f'Current item doesn\'t exists {MyModel.__class__.__name__}'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
     def get(self, request):
+        # All files
         files = MyFile.objects.all()
 
+        # Get params from request
         department_param = request.GET.get('department', None)
+        search_name = request.GET.get('search', None)
 
+        # Match department from params
         if department_param is not None:
             try:
-                department_id = Department.objects.get(name=department_param)
-            except:
-                return Response({'error': 'Current department doesn\'t exist'}, status=status.HTTP_400_BAD_REQUEST)
-            files = files.filter(department=department_id)
+                department = Department(Department.objects.get(name=department_param))
+            except Department.DoesNotExist:
+                return Response({'error': f'Current department doesn\'t exists ({department_param})'})
+            files = files.filter(department=department.pk)
+
+        if search_name is not None:
+            filtered_files = []
+            search_regex = re.compile(f".*{re.escape(search_name)}.*", re.IGNORECASE)
+
+            for file in files:
+                if search_regex.match(file.name):
+                    filtered_files.append(file)
+            files = filtered_files
+
 
         serializer = FileListSerializer(files, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -163,15 +186,43 @@ class FileListView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FileDeleteView(APIView):
+class FileUpdateSerializer(serializers.ModelSerializer):
+    """
+    FILE Update serializer
+    """
+
+    def update(self, instance, validated_data):
+        extension = instance.name.split('.')[-1] if '.' in instance.name else ''
+        new_name = f"{validated_data['name']}.{extension}"
+        instance.name = new_name
+        instance.save()
+        return instance
+
+    class Meta:
+        model = MyFile
+        fields = ['name']
+
+
+class FileUpdateView(APIView):
     '''
-    FILE Delete view.
+    FILE Update view.
     '''
 
-    def delete(self, request, pk):
+    def get_object(self, pk):
         try:
-            file = MyFile.objects.get(pk=pk)
-            file.delete()
-            return Response(status=status.HTTP_200_OK)
+            return MyFile.objects.get(pk=pk)
         except MyFile.DoesNotExist:
-            return Response(body={'error': 'File not found'}, status=status.HTTP_404_NOT_FOUND)
+            raise Http404
+
+    def delete(self, request, pk):
+        file = self.get_object(pk)
+        file.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, pk):
+        file = self.get_object(pk)
+        serializer = FileUpdateSerializer(file, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

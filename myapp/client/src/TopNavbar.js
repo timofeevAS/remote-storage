@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useMemo,useCallback } from "react";
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -9,6 +9,9 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { faSearch,faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
+import { debounce }  from 'lodash'
+
+
 
 const StyledFormControl = styled(Form.Control)`
   border: none;
@@ -26,8 +29,20 @@ const SquareButton = styled.div`
 `;
 
 
-const TopNavbar = () => {
+const TopNavbar = ({ handleSearch }) => {
+  
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const debouncedSearch = useCallback(debounce((value) => {
+    console.log('====>', value);
+    handleSearch(value);
+  }, 500),[]);
+
+  const handleQueryChange = (event) => {
+    setSearchQuery(event.target.value);
+    debouncedSearch(event.target.value);
+  };
+  
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary" bg="ligth">
@@ -53,6 +68,8 @@ const TopNavbar = () => {
                     placeholder="Search"
                     className="me-2"
                     aria-label="Search"
+                    value={searchQuery}
+                    onChange={handleQueryChange}
                 />
               <Button variant="outline-light" id="button-addon1" style={{border:"none",outline:"none"}}>
                     <FontAwesomeIcon icon={faFilter} style={{color:"black"}} />
