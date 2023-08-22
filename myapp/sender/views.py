@@ -185,7 +185,8 @@ class FileListView(APIView):
             for file in files:
                 if search_regex.match(file.name):
                     q_objects |= Q(pk=file.pk)  # Conditions for correct files
-
+            if len(q_objects) == 0:
+                q_objects = Q()
             files = files.filter(q_objects)  # Filter QuerySet
 
         # Match files with upload date

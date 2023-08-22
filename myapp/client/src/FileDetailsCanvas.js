@@ -46,6 +46,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible }) => {
     }
   }, [file]);
 
+
   return (
     <div>
       <Offcanvas show={showOffcanvas} onHide={handleClose} placement="end" scroll={true} backdrop={false}>
@@ -75,6 +76,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible }) => {
                 <p>Size: {file.size}</p>
                 <p>Task: {file.task != null ? file.task.name : "None"}</p>
                 <p>Owner: {capitalizeFirstLetter(file.owner.username)}</p>
+                <p>Date upload: {file.created_at}</p>
                 <h6>Любая инфо о файле, мб сюда пихнуть возможность его редачить</h6>
                 {/* Остальной контент */}
                 {editMode ? (

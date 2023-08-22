@@ -18,6 +18,30 @@ function App() {
     uploadDateTo:null,
     selectedFileType:null,
     });
+  
+
+  const handleSortFiles = (sortParams) => {
+    console.log('Current params sort ===>',sortParams);
+    const sortedFileData = [...fileData].sort((a, b) => {
+      if(sortParams.compare === 'name'){
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
+        return nameA.localeCompare(nameB);
+      }
+      if(sortParams.compare === 'date'){
+        const dateA = a.created_at.toLowerCase();
+        const dateB = b.created_at.toLowerCase();
+        return dateA.localeCompare(dateB);
+      }
+    });
+
+    if (!sortParams.reverse) {
+      sortedFileData.reverse();
+    } 
+
+    setFileData(sortedFileData);
+
+  }
 
   const handleSelectedFile = (file) => {
     setSelectedFile(file);
@@ -85,7 +109,7 @@ function App() {
                 transition: "margin-left 0.3s ease",
               }}
             >
-              <FileContainer handleSelectedFile={handleSelectedFile} fileData={fileData} handleUploadSuccess={()=>handleUploadSuccess()}/>
+              <FileContainer handleSelectedFile={handleSelectedFile} fileData={fileData} handleSortFiles={(sortParams)=>handleSortFiles(sortParams)} handleUploadSuccess={()=>handleUploadSuccess()}/>
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (
                 <Col md={3} >

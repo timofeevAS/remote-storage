@@ -1,8 +1,8 @@
 import React, { useState,useEffect,useMemo } from "react";
-import { Container, Row, Col, Navbar, Nav, Card } from 'react-bootstrap';
+import { Container, Row, Col, Navbar, Nav, Card, Button } from 'react-bootstrap';
 import FileCard from "./FileCard";
 import FileLine from "./FileLine";
-import { faList, faTh,faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const fileData1 = [
@@ -14,18 +14,41 @@ const fileData1 = [
 ];
 
 
-function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess }) {
+function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,handleSortFiles }) {
   console.log('FILE CONTAINER JS - render');
   const [currentIcon, setCurrentIcon] = useState(faList);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedFileCard, setSelectedFileCard] = useState(null);
   const [infoButtonClicked, setInfoButtonState] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [draggingFile, setDraggingFile] = useState(false);
+  const [isAscending, setIsAscending] = useState(true); // State to track sorting order
+  const [sortParam, setSortParam] = useState('date'); // Default sort params by date
+
+
+  const handleSortParamChange = () => {
+    {/* Switch param for sort */ }
+    setSortParam(sortParam => sortParam === 'name' ? 'date' : 'name');
+    const params = {
+      reverse: isAscending,
+      compare: sortParam === 'name' ? 'date' : 'name',
+    }
+    handleSortFiles(params);
+  };
 
   const handleDragOver = (e) => {
     { /* Removing default browser functions */ }
     e.preventDefault(); 
+  };
+
+  const handleSortClick = () => {
+    {/* Method to control sorting logic */}
+    setIsAscending((isAscending) => !isAscending);
+    const params = {
+      reverse: !isAscending,
+      compare:sortParam,
+    }
+    handleSortFiles(params);
+    
   };
   
   const handleDragEnter = (e) => {
@@ -141,7 +164,9 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess }) {
                 <div style ={{ position:'absolute',right:'45px',top:'5px',color: infoButtonClicked ? 'lightblue' : 'black'}}> <FontAwesomeIcon icon={faInfoCircle} onClick={handleInfoClick} /> </div>
                 <div style ={{ position:'absolute',right:'15px',top:'5px'}}> <FontAwesomeIcon icon={currentIcon} onClick={handleIconClick}/> </div>
                 <div style ={{ position:'absolute',left:'15px',top:'5px'}}> Files </div>
-                
+                <div style ={{ position:'absolute',right:'75px',top:'5px'}} onClick={handleSortClick} > {isAscending ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />}</div>
+                <div style ={{ position:'absolute',right:'100px',top:'3px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'date' ? 'date' : 'name'}</Button></div>
+
               </Card.Body>
             </Card>
         </Container>
