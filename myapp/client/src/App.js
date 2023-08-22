@@ -5,6 +5,7 @@ import SideBarMenu from './SideBarMenu';
 import FileContainer from './FileContainer';
 import FileDetailsCanvas from "./FileDetailsCanvas";
 import FileDetails from './FileDetails'; // Import the FileDetails component here
+import { filter } from "lodash";
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -12,7 +13,10 @@ function App() {
   const [fileData, setFileData] = useState([]);
   const [fetchConfig, setFetchConfig] = useState({
     department:null,
-    search:null
+    search:null,
+    uploadDateFrom:null,
+    uploadDateTo:null,
+    selectedFileType:null,
     });
 
   const handleSelectedFile = (file) => {
@@ -28,7 +32,7 @@ function App() {
 
   const fetchFileData = () => {
     const queryString = Object.keys(fetchConfig)
-      .filter(key => fetchConfig[key] !== null)
+      .filter(key => (fetchConfig[key] !== null && fetchConfig[key] !== '') )
       .map(key => `${key}=${fetchConfig[key]}`)
       .join("&");
   
@@ -51,15 +55,23 @@ function App() {
     fetchFileData();
   }
 
-  const handleSearch = (searchQuery) => {
+  const handleSearch = async (searchQuery) => {
     {/* Function to edit fetch config for search request */}
     console.log('Search query is: ', searchQuery);
     setFetchConfig({ ...fetchConfig, search: searchQuery });
   };
 
+  const handleFilterSubmit = async (filterConfig) => {
+    {/* Function to edit fetch config when user add filters */}
+    console.log('Filters is: ', filterConfig);
+    setFetchConfig({ ...fetchConfig, 
+      ...filterConfig
+    });
+  };
+
   return (
     <>
-      <TopNavbar handleSearch={handleSearch}/>
+      <TopNavbar handleSearch={handleSearch} handleFilterSubmit={handleFilterSubmit}/>
       <Container fluid>
         <Row>
           <Col md={2} className=''>

@@ -1,5 +1,7 @@
 import re
+import datetime, pytz
 
+from django.db.models import Q
 from django.shortcuts import render
 
 from .forms import FileUploadForm
@@ -139,6 +141,16 @@ class FileListView(APIView):
     View for filelist
     """
 
+    def date_convert(self, date):
+        # Convert str to int by year month day
+        year = int(date[:4])
+        month = int(date[5:7])
+        day = int(date[8:10])
+
+        # Convert to datetime for compare with DB
+        converted_date = datetime.datetime(year, month, day, tzinfo=pytz.UTC)
+
+        return converted_date
     def get_object_by_pk(self, MyModel, pk):
         try:
             return MyModel.objects.get(pk=pk)
@@ -153,6 +165,9 @@ class FileListView(APIView):
         # Get params from request
         department_param = request.GET.get('department', None)
         search_name = request.GET.get('search', None)
+        upload_date_from = request.GET.get('uploadDateFrom', None)
+        upload_date_to = request.GET.get('uploadDateTo', None)
+        extensions = request.GET.get('selectedFileType', None)
 
         # Match department from params
         if department_param is not None:
@@ -162,15 +177,37 @@ class FileListView(APIView):
                 return Response({'error': f'Current department doesn\'t exists ({department_param})'})
             files = files.filter(department=department.pk)
 
+        # Match files with name from param
         if search_name is not None:
-            filtered_files = []
             search_regex = re.compile(f".*{re.escape(search_name)}.*", re.IGNORECASE)
+            q_objects = Q()  # Empty Q-object
 
             for file in files:
                 if search_regex.match(file.name):
-                    filtered_files.append(file)
-            files = filtered_files
+                    q_objects |= Q(pk=file.pk)  # Conditions for correct files
 
+            files = files.filter(q_objects)  # Filter QuerySet
+
+        # Match files with upload date
+        if upload_date_from is not None:
+            upload_date_from = self.date_convert(upload_date_from)
+            files = files.filter(created_at__gte=upload_date_from)
+
+        if upload_date_to is not None:
+            upload_date_to = self.date_convert(upload_date_to)
+            files = files.filter(created_at__lte=upload_date_to)
+
+        # Match files with extensions
+        if extensions is not None:
+            extensions = tuple(extensions.split(','))
+            q_objects = Q()  # Empty Q-object
+
+            # Filter files with extension from params
+            for file in files:
+                if str(file.name).endswith(extensions):
+                    q_objects |= Q(pk=file.pk)
+
+            files = files.filter(q_objects)
 
         serializer = FileListSerializer(files, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -2,7 +2,8 @@ import React, { useState,useMemo,useCallback } from "react";
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
+import FilterForm from "./FilterForm";
+import { Modal } from "react-bootstrap";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -29,21 +30,47 @@ const SquareButton = styled.div`
 `;
 
 
-const TopNavbar = ({ handleSearch }) => {
-  
-  const [searchQuery, setSearchQuery] = useState("");
+const TopNavbar = ({ handleSearch, handleFilterSubmit }) => {
+  const [searchQuery, setSearchQuery] = useState(""); // State for search bar query
+  const [showFilterModal, setShowFilterModal] = useState(false); // State for Filters 
+  const [filters, setFilters] = useState({
+    uploadDateFrom: '',
+    uploadDateTo: '',
+    selectedFileType: '',
+    search: ''
+    // Another filters
+  });
 
   const debouncedSearch = useCallback(debounce((value) => {
-    console.log('====>', value);
-    handleSearch(value);
+    { /* Debounced search function with 500 milliseconds delay */ }
+    console.log('====>', value.search);
+    handleFilterSubmit(value);
   }, 500),[]);
 
   const handleQueryChange = (event) => {
+    { /*Handle for search bar query and call debounced function */ }
     setSearchQuery(event.target.value);
-    debouncedSearch(event.target.value);
+    const newFilters = { ...filters, search: event.target.value };
+    setFilters(newFilters);
+    debouncedSearch(newFilters);
+  };
+
+  
+  const handleApplyFilters = (newFilters) => {
+    setFilters({ ...filters, ...newFilters });
+    console.log('newFilters: ',{...filters, ...newFilters})
+    handleFilterSubmit(newFilters);
+    handleCloseFilterModal();
+  };
+
+  const handleShowFilterModal = () => {
+      setShowFilterModal(true);
+    };
+
+  const handleCloseFilterModal = () => {
+    setShowFilterModal(false);
   };
   
-
   return (
     <Navbar expand="lg" className="bg-body-tertiary" bg="ligth">
       <Container fluid>
@@ -60,23 +87,32 @@ const TopNavbar = ({ handleSearch }) => {
           <Form className="d-flex">
           <h6>В Навбаре будут фильтры, поиск,</h6>
             <InputGroup>
-                <Button variant="outline-light" id="button-addon1" style={{border:"none",outline:"none"}}>
-                    <FontAwesomeIcon icon={faSearch} style={{color:"black"}} />
-                </Button>
-                <StyledFormControl
-                    type="search"
-                    placeholder="Search"
-                    className="me-2"
-                    aria-label="Search"
-                    value={searchQuery}
-                    onChange={handleQueryChange}
-                />
               <Button variant="outline-light" id="button-addon1" style={{border:"none",outline:"none"}}>
-                    <FontAwesomeIcon icon={faFilter} style={{color:"black"}} />
-                </Button>
+                  <FontAwesomeIcon icon={faSearch} style={{color:"black"}} />
+              </Button>
+              <StyledFormControl
+                  type="search"
+                  placeholder="Search"
+                  className="me-2"
+                  aria-label="Search"
+                  value={searchQuery}
+                  onChange={handleQueryChange}
+              />
+              <Button variant="outline-light" id="button-addon1" style={{border:"none",outline:"none"}} onClick={handleShowFilterModal}>
+                <FontAwesomeIcon icon={faFilter} style={{color:"black"}} />
+              </Button>
             </InputGroup>
           </Form>
           </SquareButton>
+          {/* Modal window for filters */}
+          <Modal show={showFilterModal} onHide={handleCloseFilterModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Filter Files</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <FilterForm handleFilterSubmit={handleApplyFilters} initFilters={filters} />
+            </Modal.Body>
+          </Modal>
         </Navbar.Collapse>
       </Container>
     </Navbar>
