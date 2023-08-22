@@ -11,15 +11,15 @@ function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileDetailsVisible, setFileDetailsVisible] = useState(false); // Currency state of fileDetails
   const [fileData, setFileData] = useState([]);
+  const [selectedDepartment, setDepartment] = useState('')
   const [fetchConfig, setFetchConfig] = useState({
-    department:null,
+    department:selectedDepartment,
     search:null,
     uploadDateFrom:null,
     uploadDateTo:null,
     selectedFileType:null,
     });
-  
-
+  console.log('Current fetch config  ===>',fetchConfig);
   const handleSortFiles = (sortParams) => {
     console.log('Current params sort ===>',sortParams);
     const sortedFileData = [...fileData].sort((a, b) => {
@@ -79,27 +79,35 @@ function App() {
     fetchFileData();
   }
 
-  const handleSearch = async (searchQuery) => {
-    {/* Function to edit fetch config for search request */}
-    console.log('Search query is: ', searchQuery);
-    setFetchConfig({ ...fetchConfig, search: searchQuery });
-  };
 
-  const handleFilterSubmit = async (filterConfig) => {
+
+  const handleFilterSubmit =  (filterConfig) => {
     {/* Function to edit fetch config when user add filters */}
     console.log('Filters is: ', filterConfig);
-    setFetchConfig({ ...fetchConfig, 
-      ...filterConfig
+    console.log('Fetch is: ', fetchConfig); 
+    console.log('Department is: ', selectedDepartment);
+    setFetchConfig({ 
+      ...fetchConfig, 
+      ...filterConfig,
+      department:selectedDepartment,
     });
   };
 
+  const handleDepartment =  (curDepartment) => {
+    {/* Function to catch department from SideBarMenu */} 
+    setDepartment(curDepartment)
+    setFetchConfig({...fetchConfig,
+       department: curDepartment
+      });
+  }
+
   return (
     <>
-      <TopNavbar handleSearch={handleSearch} handleFilterSubmit={handleFilterSubmit}/>
+      <TopNavbar handleFilterSubmit={handleFilterSubmit}/>
       <Container fluid>
         <Row>
           <Col md={2} className=''>
-          <SideBarMenu handleUploadSuccess={handleUploadSuccess} setFetchConfig={setFetchConfig} />
+          <SideBarMenu handleUploadSuccess={handleUploadSuccess} handleDepartment={(cur) => handleDepartment(cur)} />
           </Col>
           <Col md={10}>
             {/* */}
@@ -113,7 +121,7 @@ function App() {
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (
                 <Col md={3} >
-                  {<FileDetailsCanvas file={selectedFile} />}
+                  {<FileDetailsCanvas file={selectedFile} setFileDetailsVisible={setFileDetailsVisible}/>}
                 </Col>
               )}
             </div>

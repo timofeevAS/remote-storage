@@ -179,15 +179,17 @@ class FileListView(APIView):
 
         # Match files with name from param
         if search_name is not None:
-            search_regex = re.compile(f".*{re.escape(search_name)}.*", re.IGNORECASE)
+            print(f'{search_name} - search query')
+            search_regex = re.compile(rf'\b\w*{search_name}\w*\b', re.IGNORECASE)
             q_objects = Q()  # Empty Q-object
 
             for file in files:
                 if search_regex.match(file.name):
                     q_objects |= Q(pk=file.pk)  # Conditions for correct files
             if len(q_objects) == 0:
-                q_objects = Q()
-            files = files.filter(q_objects)  # Filter QuerySet
+                files = MyFile.objects.none()
+            else:
+                files = files.filter(q_objects)  # Filter QuerySet
 
         # Match files with upload date
         if upload_date_from is not None:
@@ -208,9 +210,13 @@ class FileListView(APIView):
                 if str(file.name).endswith(extensions):
                     q_objects |= Q(pk=file.pk)
 
-            files = files.filter(q_objects)
+            if len(q_objects) == 0:
+                files = MyFile.objects.none()
+            else:
+                files = files.filter(q_objects)  # Filter QuerySet
 
         serializer = FileListSerializer(files, many=True)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):

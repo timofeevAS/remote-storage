@@ -5,7 +5,7 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { Nav, Navbar } from "react-bootstrap";
 import UploadForm from "./UploadForm";
 
-const SideBarMenu = ({ handleUploadSuccess, setFetchConfig }) => {
+const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);
   const departments = ["it", "hr", "other"];
 
@@ -18,10 +18,7 @@ const SideBarMenu = ({ handleUploadSuccess, setFetchConfig }) => {
   };
 
   const handleDepartmentChange = (selectedDepartment) => {
-    setFetchConfig(prevFetchConfig => ({
-      ...prevFetchConfig,
-      department: selectedDepartment,
-    }));
+    handleDepartment(selectedDepartment);
   } 
 
 

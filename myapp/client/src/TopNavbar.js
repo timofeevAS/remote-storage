@@ -30,7 +30,7 @@ const SquareButton = styled.div`
 `;
 
 
-const TopNavbar = ({ handleSearch, handleFilterSubmit }) => {
+const TopNavbar = ({ handleFilterSubmit }) => {
   const [searchQuery, setSearchQuery] = useState(""); // State for search bar query
   const [showFilterModal, setShowFilterModal] = useState(false); // State for Filters 
   const [filters, setFilters] = useState({

@@ -33,6 +33,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible }) => {
       setEditedName(responseData.name);
     }
     setEditMode(false);
+    setFileDetailsVisible(false);
   };
 
 
