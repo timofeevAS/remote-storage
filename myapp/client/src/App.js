@@ -18,6 +18,9 @@ function App() {
     uploadDateTo:null,
     selectedFileType:null,
     });
+  const [infoButtonClicked, setInfoButtonState] = useState(false);
+  const isMobile = window.innerWidth <= 768;
+    
   console.log('Current fetch config  ===>',fetchConfig);
   const handleSortFiles = (sortParams) => {
     console.log('Current params sort ===>',sortParams);
@@ -107,15 +110,21 @@ function App() {
             {/* */}
             <div
               style={{
-                marginLeft: fileDetailsVisible ? "-500px" : 0, // Negative margin when details opened
+                marginLeft: fileDetailsVisible && !isMobile ? "-500px" : 0, // Negative margin when details opened
                 transition: "margin-left 0.3s ease",
               }}
             >
-              <FileContainer handleSelectedFile={handleSelectedFile} fileData={fileData} handleSortFiles={(sortParams)=>handleSortFiles(sortParams)} handleUploadSuccess={()=>handleUploadSuccess()}/>
+              <FileContainer 
+              handleSelectedFile={handleSelectedFile} 
+              fileData={fileData} 
+              handleSortFiles={(sortParams)=>handleSortFiles(sortParams)} 
+              handleUploadSuccess={()=>handleUploadSuccess()}
+              infoButtonClicked={infoButtonClicked}
+              setInfoButtonState={setInfoButtonState}/>
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (
                 <Col md={3} >
-                  {<FileDetailsCanvas file={selectedFile} setFileDetailsVisible={setFileDetailsVisible}/>}
+                  {<FileDetailsCanvas file={selectedFile} setFileDetailsVisible={setFileDetailsVisible} setInfoButtonState={setInfoButtonState}/>}
                 </Col>
               )}
             </div>

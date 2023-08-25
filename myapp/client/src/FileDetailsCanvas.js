@@ -5,13 +5,14 @@ import { faPencil,faCheck } from '@fortawesome/free-solid-svg-icons';
 
 
 
-const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible }) => {
+const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInfoButtonState }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedName, setEditedName] = useState(file ? file.name : "");
 
   const handleClose = () => {
     setShowOffcanvas(false);
+    setInfoButtonState(false);
     setFileDetailsVisible(false);
     setSelectedFile(-1);
   }
@@ -34,6 +35,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible }) => {
     }
     setEditMode(false);
     setFileDetailsVisible(false);
+    
   };
 
 

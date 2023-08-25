@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
-import { Nav, Navbar } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
 import UploadForm from "./UploadForm";
 
 const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);
-  const [hotbarDep,setDep] = useState('');
   const departments = ['it', 'hr', 'other'];
 
   const handleUploadClick = () => {
@@ -19,7 +18,6 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
   };
 
   const handleDepartmentChange = (selectedDepartment) => {
-    setDep(selectedDepartment)
     handleDepartment(selectedDepartment);
   } 
 

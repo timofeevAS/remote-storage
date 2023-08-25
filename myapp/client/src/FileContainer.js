@@ -14,12 +14,12 @@ const fileData1 = [
 ];
 
 
-function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,handleSortFiles }) {
+function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,handleSortFiles,infoButtonClicked,setInfoButtonState }) {
   console.log('FILE CONTAINER JS - render');
   const [currentIcon, setCurrentIcon] = useState(faList);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedFileCard, setSelectedFileCard] = useState(null);
-  const [infoButtonClicked, setInfoButtonState] = useState(false);
+  //const [infoButtonClicked, setInfoButtonState] = useState(false);
   const [draggingFile, setDraggingFile] = useState(false);
   const [isAscending, setIsAscending] = useState(true); // State to track sorting order
   const [sortParam, setSortParam] = useState('date'); // Default sort params by date
