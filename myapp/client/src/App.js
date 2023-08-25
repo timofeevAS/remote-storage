@@ -19,6 +19,10 @@ function App() {
     selectedFileType:null,
     });
   const [infoButtonClicked, setInfoButtonState] = useState(false);
+  const [currentSort, setCurrentSort] = useState({
+    reverse:false,
+    compare:'date'
+  })
   const isMobile = window.innerWidth <= 768;
     
   console.log('Current fetch config  ===>',fetchConfig);
@@ -37,24 +41,26 @@ function App() {
       }
     });
 
-    if (!sortParams.reverse) {
+    if (sortParams.reverse) {
       sortedFileData.reverse();
     } 
 
     setFileData(sortedFileData);
+    setCurrentSort(sortParams);
 
   }
 
   const handleSelectedFile = (file) => {
     setSelectedFile(file);
     file === -1 ? setFileDetailsVisible(false) : setFileDetailsVisible(true);
-    console.log('APP.JS: ',selectedFile,fileDetailsVisible);
   };
 
   useEffect(() => {
     {/* Update fetch data, when fetchConfig edit */}
     fetchFileData();
+    handleSortFiles(currentSort);
   }, [fetchConfig]); 
+
 
   const fetchFileData = () => {
     const queryString = Object.keys(fetchConfig)
@@ -73,6 +79,8 @@ function App() {
         setFileData(data);
       })
       .catch(error => console.error("Error fetching file data:", error));
+      handleSortFiles(currentSort);
+      
   };
   
 
@@ -97,7 +105,7 @@ function App() {
        department: curDepartment
       });
   }
-  console.log('Department is: ', fetchConfig.department);
+
   return (
     <>
       <TopNavbar handleFilterSubmit={handleFilterSubmit} selectedDepartment={fetchConfig.department}/>
