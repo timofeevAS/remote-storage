@@ -30,7 +30,7 @@ const SquareButton = styled.div`
 `;
 
 
-const TopNavbar = ({ handleFilterSubmit }) => {
+const TopNavbar = ({ handleFilterSubmit,selectedDepartment }) => {
   const [searchQuery, setSearchQuery] = useState(""); // State for search bar query
   const [showFilterModal, setShowFilterModal] = useState(false); // State for Filters 
   const [filters, setFilters] = useState({
@@ -50,7 +50,7 @@ const TopNavbar = ({ handleFilterSubmit }) => {
   const handleQueryChange = (event) => {
     { /*Handle for search bar query and call debounced function */ }
     setSearchQuery(event.target.value);
-    const newFilters = { ...filters, search: event.target.value };
+    const newFilters = { ...filters, search: event.target.value,department:selectedDepartment };
     setFilters(newFilters);
     debouncedSearch(newFilters);
   };

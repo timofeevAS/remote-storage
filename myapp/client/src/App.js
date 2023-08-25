@@ -11,9 +11,8 @@ function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileDetailsVisible, setFileDetailsVisible] = useState(false); // Currency state of fileDetails
   const [fileData, setFileData] = useState([]);
-  const [selectedDepartment, setDepartment] = useState('')
   const [fetchConfig, setFetchConfig] = useState({
-    department:selectedDepartment,
+    department:null,
     search:null,
     uploadDateFrom:null,
     uploadDateTo:null,
@@ -83,27 +82,22 @@ function App() {
 
   const handleFilterSubmit =  (filterConfig) => {
     {/* Function to edit fetch config when user add filters */}
-    console.log('Filters is: ', filterConfig);
-    console.log('Fetch is: ', fetchConfig); 
-    console.log('Department is: ', selectedDepartment);
     setFetchConfig({ 
       ...fetchConfig, 
-      ...filterConfig,
-      department:selectedDepartment,
+      ...filterConfig
     });
   };
 
   const handleDepartment =  (curDepartment) => {
     {/* Function to catch department from SideBarMenu */} 
-    setDepartment(curDepartment)
     setFetchConfig({...fetchConfig,
        department: curDepartment
       });
   }
-
+  console.log('Department is: ', fetchConfig.department);
   return (
     <>
-      <TopNavbar handleFilterSubmit={handleFilterSubmit}/>
+      <TopNavbar handleFilterSubmit={handleFilterSubmit} selectedDepartment={fetchConfig.department}/>
       <Container fluid>
         <Row>
           <Col md={2} className=''>

@@ -7,7 +7,8 @@ import UploadForm from "./UploadForm";
 
 const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);
-  const departments = ["it", "hr", "other"];
+  const [hotbarDep,setDep] = useState('');
+  const departments = ['it', 'hr', 'other'];
 
   const handleUploadClick = () => {
     setShowUploadForm(true);
@@ -18,6 +19,7 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
   };
 
   const handleDepartmentChange = (selectedDepartment) => {
+    setDep(selectedDepartment)
     handleDepartment(selectedDepartment);
   } 
 
