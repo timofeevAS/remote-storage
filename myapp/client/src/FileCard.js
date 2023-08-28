@@ -65,7 +65,7 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
     console.log(file.id);
   };
 
-
+  const apiUrl = 'http://127.0.0.1:8000'
   return (
     
     <Card onContextMenu={handleContextMenu} onClick={handleClick} style=
@@ -81,11 +81,11 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
         <Card.Title style={{ fontSize: '20px', position: 'relative', top: '15px' }}>
           {truncateText(file.name,12)}
         </Card.Title>
-        <Card.Link href="#" download target="_blank" rel="noreferrer" style={{ position: 'relative', top: '12px' }}>
+        <Card.Link href={apiUrl+file.url} download target="_blank" rel="noreferrer" style={{ position: 'relative', top: '12px' }}>
           <FontAwesomeIcon icon={faDownload} className="DownloadIcon" size="lg"/>
         </Card.Link>
       </Card.Body>
-      <Card.Link href="#" style={{ position: 'absolute', top: '13px', right: '15px' }}>
+      <Card.Link href='#' style={{ position: 'absolute', top: '13px', right: '15px' }}>
         <div style={{ position: "relative", display: "inline-block" }}>
             {openMenu === file.id && 
               <ContextMenu 

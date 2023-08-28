@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import { Button, Offcanvas,Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil,faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faPencil,faCheck,faDownload } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -49,6 +49,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
     }
   }, [file]);
 
+  const apiUrl='http://127.0.0.1:8000'
 
   return (
     <div>
@@ -87,10 +88,13 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
                     <FontAwesomeIcon icon={faCheck} size="sm" />
                   </Button>
                 ) : (
-                  <Button variant="ligth" onClick={handleEdit} style={{position:'relative', left:'320px',bottom:'290px'}}>
+                  <Button variant="ligth" href={apiUrl+file.url} style={{position:'relative', left:'320px',bottom:'290px'}}>
                     <FontAwesomeIcon icon={faPencil} size="sm" />
                   </Button>
                 )}
+                <Button variant="ligth" href={apiUrl+file.url} href={apiUrl+file.url} download target="_blank" rel="noreferrer" style={{position:'relative', left:'200px',bottom:'290px'}}>
+                  <FontAwesomeIcon icon={faDownload} size="sm" />
+                </Button>
               </>
             )}
           </div>

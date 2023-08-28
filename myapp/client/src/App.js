@@ -23,11 +23,17 @@ function App() {
     reverse:false,
     compare:'date'
   })
+
+  { /*Flag to check is mobile device*/ }
   const isMobile = window.innerWidth <= 768;
     
+  { /*Output current fetch configuration*/ }
   console.log('Current fetch config  ===>',fetchConfig);
+  
+
   const handleSortFiles = (sortParams) => {
-    console.log('Current params sort ===>',sortParams);
+    { /*Method to sorting file data*/ }
+    console.log('Sorting files... ===>',sortParams,fileData);
     const sortedFileData = [...fileData].sort((a, b) => {
       if(sortParams.compare === 'name'){
         const nameA = a.name.toLowerCase();
@@ -47,7 +53,8 @@ function App() {
 
     setFileData(sortedFileData);
     setCurrentSort(sortParams);
-
+    console.log('Sorted files:', sortedFileData);
+    return sortedFileData;
   }
 
   const handleSelectedFile = (file) => {
@@ -58,29 +65,26 @@ function App() {
   useEffect(() => {
     {/* Update fetch data, when fetchConfig edit */}
     fetchFileData();
-    handleSortFiles(currentSort);
   }, [fetchConfig]); 
 
 
   const fetchFileData = () => {
     const queryString = Object.keys(fetchConfig)
-      .filter(key => (fetchConfig[key] !== null && fetchConfig[key] !== '') )
+      .filter(key => fetchConfig[key] !== null && fetchConfig[key] !== '')
       .map(key => `${key}=${fetchConfig[key]}`)
-      .join("&");
+      .join('&');
   
     const apiUrl = `http://127.0.0.1:8000/users/files/?${queryString}`;
   
-    console.log("API URL:", apiUrl); // Output url with fetch config
+    console.log('API URL:', apiUrl);
   
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
-        console.log("Fetched data:", data); // fetched data
-        setFileData(data);
+        console.log('Fetched data:', data);
+        setFileData(data);  
       })
-      .catch(error => console.error("Error fetching file data:", error));
-      handleSortFiles(currentSort);
-      
+      .catch(error => console.error('Error fetching file data:', error));
   };
   
 
