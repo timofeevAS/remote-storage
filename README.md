@@ -18,7 +18,15 @@ pip install -r requirements.txt
 ```
 python manage.py makemigrations
 python manage.py migrate
+python manage.py data_gen
 python manage.py runserver
 ```
 
+## To manage frontend:
+1. Install Node.js `https://nodejs.org/ru`
+```
+npm run dev
+```
+
 http://localhost:8000 - your site available
+http://localhost:8000/users/files/upload_page - your docs page

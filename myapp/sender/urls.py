@@ -6,3 +6,5 @@ urlpatterns = [
     path('files/', FileListView.as_view(),name='file_list'),
     path('files/<int:pk>/', FileUpdateView.as_view(), name='api-file-delete'),
 ]
+
+

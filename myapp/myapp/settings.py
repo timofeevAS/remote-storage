@@ -160,8 +160,8 @@ WEBPACK_LOADER = {
 }
 
 # Our media url
-MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 ALLOWED_FILE_TYPES=['pdf','txt']
 
 MAX_UPLOAD_SIZE = '5242880'

@@ -56,7 +56,7 @@ class Department(models.Model):
 
 class MyFile(models.Model):
     name = models.CharField(max_length=255)
-    file = ContentTypeRestrictedFileField(upload_to='media/',
+    file = ContentTypeRestrictedFileField(upload_to='uploads/',
                                           content_types=['application/pdf',
                                                          'application/txt',
                                                          'video/mp4',
