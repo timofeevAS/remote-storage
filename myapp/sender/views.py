@@ -25,7 +25,7 @@ def user_files(request):
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
 
-        superuser = User.objects.get(is_superuser=True, username='admin')
+        superuser = get(is_superuser=True, username='admin')
 
         if form.is_valid():
             file = request.FILES.get('file')
@@ -111,7 +111,7 @@ class FileUploadSerializer(serializers.ModelSerializer):
         fields = ['file', 'name']
 
     def create(self, validated_data):
-        superuser = User.objects.get(is_superuser=True, username='admin')
+        superuser = get(is_superuser=True, username='admin')
         name = validated_data.get('name')
 
         if name == '':
@@ -151,6 +151,7 @@ class FileListView(APIView):
         converted_date = datetime.datetime(year, month, day, tzinfo=pytz.UTC)
 
         return converted_date
+
     def get_object_by_pk(self, MyModel, pk):
         try:
             return MyModel.objects.get(pk=pk)
@@ -270,3 +271,26 @@ class FileUpdateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = ['name', 'id']
+
+
+
+
+
+class DepartmentViewList(APIView):
+    """
+    View for departments
+    """
+
+    def get(self, request):
+        # All files
+        departments = Department.objects.all()
+
+        serializer = DepartmentSerializer(departments, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
