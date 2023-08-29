@@ -21,7 +21,7 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,setCurr
   const [selectedFileCard, setSelectedFileCard] = useState(null);
   //const [infoButtonClicked, setInfoButtonState] = useState(false);
   const [draggingFile, setDraggingFile] = useState(false);
-  const [isAscending, setIsAscending] = useState(false); // State to track sorting order
+  const [isAscending, setIsAscending] = useState(true); // State to track sorting order
   const [sortParam, setSortParam] = useState('date'); // Default sort params by date
 
 
@@ -140,7 +140,7 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,setCurr
   
   const fileCards = useMemo(() => {
     return fileData.map((file, index) => (
-      <Col key={index}>
+      <Col key={index} >
         {currentIcon === faList ? (
           <FileCard 
             file={file} 
@@ -166,13 +166,13 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,setCurr
   return (
     <div >
         <Container>
-            <Card style={{outline:'none',border:'none'}}>
+            <Card style={{outline:'none',border:'none', margin:'5px'}}>
               <Card.Body>
                 <div style ={{ position:'absolute',right:'45px',top:'5px',color: infoButtonClicked ? 'lightblue' : 'black'}}> <FontAwesomeIcon icon={faInfoCircle} onClick={handleInfoClick} /> </div>
                 <div style ={{ position:'absolute',right:'15px',top:'5px'}}> <FontAwesomeIcon icon={currentIcon} onClick={handleIconClick}/> </div>
                 <div style ={{ position:'absolute',left:'15px',top:'5px'}}> Files </div>
                 <div style ={{ position:'absolute',right:'75px',top:'5px'}} onClick={handleSortClick} > {isAscending ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />}</div>
-                <div style ={{ position:'absolute',right:'100px',top:'3px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'name' ? 'name' : 'date'}</Button></div>
+                <div style ={{ position:'absolute',right:'100px',top:'2px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'name' ? 'name' : 'date'}</Button></div>
 
               </Card.Body>
             </Card>
