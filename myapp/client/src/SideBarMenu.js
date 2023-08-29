@@ -34,7 +34,7 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
       </Button>
       {showUploadForm && <UploadForm onClose={closeUploadForm} handleUploadSuccess={handleUploadSuccess} />}
       
-      <div className="mb-2" style={{margin:"5px", width: "200px", height: "30px"}}>
+      
       <h6>Разделы, задачи хранятся тут</h6>
         {departments.map((department, index) => (
           <Button
@@ -52,7 +52,7 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
         ))}
         
         {/* Another departments */}
-      </div>
+     
     </Nav>
   );
 };
