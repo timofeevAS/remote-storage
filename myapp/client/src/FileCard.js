@@ -79,7 +79,7 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
      }}>
       <Card.Body className="d-flex flex-column align-items-center justify-content-center">
         <Card.Title style={{ fontSize: '20px', position: 'relative', top: '15px' }}>
-          {truncateText(file.name,12)}
+          {truncateText(file.name,11)}
         </Card.Title>
         <Card.Link href={apiUrl+file.url} download target="_blank" rel="noreferrer" style={{ position: 'relative', top: '12px' }}>
           <FontAwesomeIcon icon={faDownload} className="DownloadIcon" size="lg"/>

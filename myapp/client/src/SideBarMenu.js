@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +7,24 @@ import UploadForm from "./UploadForm";
 
 const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);
-  const departments = ['it', 'hr', 'other'];
+  const [departments, setDepartments] = useState([]);
+  const [activeDepartment, setActiveDepartment] = useState(null);
+
+  useEffect(() => {
+    // Fetch departments when the component mounts
+    fetchDepartments();
+  }, []);
+
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/users/files/departments");
+      const data = await response.json();
+      setDepartments(data); // Assuming the response has a 'departments' property
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
+
 
   const handleUploadClick = () => {
     setShowUploadForm(true);
@@ -18,10 +35,18 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
   };
 
   const handleDepartmentChange = (selectedDepartment) => {
-    handleDepartment(selectedDepartment);
-  } 
+    {/* Handle to control selected department, if it double selected -> disable it */}
+    if(activeDepartment === selectedDepartment.name){
+      setActiveDepartment(null);
+      handleDepartment(null);
+    }
+    else{
+      setActiveDepartment(selectedDepartment.name);
+      handleDepartment(selectedDepartment.name);
+    } 
+  }
 
-
+  console.log
   return (
     <Nav defaultActiveKey="/home" className="flex-column">
       <Button
@@ -39,14 +64,14 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
         {departments.map((department, index) => (
           <Button
             key={index}
-            variant="outline-dark"
+            variant={activeDepartment === department.name ? "primary" : "outline-dark"}
             size="sm"
             className="d-block mb-2"
             style={{border: "none",   width: "200px", height: "30px", textAlign: "left"}}
             onClick={() => handleDepartmentChange(department)}
           >
             <FontAwesomeIcon icon={faDownload}/>
-            {department.toUpperCase()}
+            {department.name.toUpperCase()}
             
           </Button>
         ))}

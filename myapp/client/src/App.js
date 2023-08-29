@@ -131,14 +131,14 @@ function App() {
       <TopNavbar handleFilterSubmit={handleFilterSubmit} selectedDepartment={fetchConfig.department}/>
       <Container fluid>
         <Row>
-          <Col md={2} className=''>
+          <Col xl={1}>
           <SideBarMenu handleUploadSuccess={handleUploadSuccess} handleDepartment={(cur) => handleDepartment(cur)} />
           </Col>
-          <Col md={10}>
+          <Col xl={11} >
             {/* */}
             <div
               style={{
-                marginLeft: fileDetailsVisible && !isMobile ? "-500px" : 0, // Negative margin when details opened
+                marginLeft: fileDetailsVisible && !isMobile ? "-00px" : 0, // Negative margin when details opened
                 transition: "margin-left 0.3s ease",
               }}
             >
@@ -151,9 +151,9 @@ function App() {
               setInfoButtonState={setInfoButtonState}/>
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (
-                <Col md={3} >
+                <>
                   {<FileDetailsCanvas file={selectedFile} setFileDetailsVisible={setFileDetailsVisible} setInfoButtonState={setInfoButtonState}/>}
-                </Col>
+                </>
               )}
             </div>
           </Col>

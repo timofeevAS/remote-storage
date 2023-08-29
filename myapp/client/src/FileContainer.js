@@ -140,7 +140,7 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,setCurr
   
   const fileCards = useMemo(() => {
     return fileData.map((file, index) => (
-      <Col key={index} >
+      <Col key={index} md={2} >
         {currentIcon === faList ? (
           <FileCard 
             file={file} 

@@ -88,7 +88,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
                     <FontAwesomeIcon icon={faCheck} size="sm" />
                   </Button>
                 ) : (
-                  <Button variant="ligth" href={apiUrl+file.url} style={{position:'relative', left:'320px',bottom:'290px'}}>
+                  <Button variant="ligth" onClick={handleEdit} style={{position:'relative', left:'320px',bottom:'290px'}}>
                     <FontAwesomeIcon icon={faPencil} size="sm" />
                   </Button>
                 )}
