@@ -20,7 +20,7 @@ function App() {
     });
   const [infoButtonClicked, setInfoButtonState] = useState(false);
   const [currentSort, setCurrentSort] = useState({
-    reverse:false,
+    reverse:true,
     compare:'date'
   })
 
@@ -31,10 +31,21 @@ function App() {
   console.log('Current fetch config  ===>',fetchConfig);
   
 
-  const handleSortFiles = (sortParams) => {
+  const handleClearFilters = () => {
+    {/* Method to clear filters */}
+    setFetchConfig({
+      department: null,
+      search: null,
+      uploadDateFrom: null,
+      uploadDateTo: null,
+      selectedFileType: null,
+    });
+  };
+
+  const handleSortFiles = (sortParams, data) => {
     { /*Method to sorting file data*/ }
-    console.log('Sorting files... ===>',sortParams,fileData);
-    const sortedFileData = [...fileData].sort((a, b) => {
+    console.log('Sorting files... ===>',sortParams,data);
+    const sortedFileData = [...data].sort((a, b) => {
       if(sortParams.compare === 'name'){
         const nameA = a.name.toLowerCase();
         const nameB = b.name.toLowerCase();
@@ -54,7 +65,6 @@ function App() {
     setFileData(sortedFileData);
     setCurrentSort(sortParams);
     console.log('Sorted files:', sortedFileData);
-    return sortedFileData;
   }
 
   const handleSelectedFile = (file) => {
@@ -66,6 +76,11 @@ function App() {
     {/* Update fetch data, when fetchConfig edit */}
     fetchFileData();
   }, [fetchConfig]); 
+
+  useEffect(() => {
+    {/* Update data with sorting when sort config update */}
+    handleSortFiles(currentSort,fileData);
+  }, [currentSort]); 
 
 
   const fetchFileData = () => {
@@ -81,8 +96,8 @@ function App() {
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched data:', data);
-        setFileData(data);  
+        // console.log('Fetched data:', data);
+        handleSortFiles(currentSort,data);  
       })
       .catch(error => console.error('Error fetching file data:', error));
   };
@@ -91,6 +106,7 @@ function App() {
   const handleUploadSuccess = () => {
     {/* While data upload success -> fetching new data from API */}
     fetchFileData();
+    handleClearFilters();
   }
 
 
@@ -129,7 +145,7 @@ function App() {
               <FileContainer 
               handleSelectedFile={handleSelectedFile} 
               fileData={fileData} 
-              handleSortFiles={(sortParams)=>handleSortFiles(sortParams)} 
+              setCurrentSort={(params)=>setCurrentSort(params)} 
               handleUploadSuccess={()=>handleUploadSuccess()}
               infoButtonClicked={infoButtonClicked}
               setInfoButtonState={setInfoButtonState}/>

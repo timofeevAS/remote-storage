@@ -14,14 +14,14 @@ const fileData1 = [
 ];
 
 
-function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,handleSortFiles,infoButtonClicked,setInfoButtonState }) {
+function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,setCurrentSort,infoButtonClicked,setInfoButtonState }) {
   console.log('FILE CONTAINER JS - render');
   const [currentIcon, setCurrentIcon] = useState(faList);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedFileCard, setSelectedFileCard] = useState(null);
   //const [infoButtonClicked, setInfoButtonState] = useState(false);
   const [draggingFile, setDraggingFile] = useState(false);
-  const [isAscending, setIsAscending] = useState(true); // State to track sorting order
+  const [isAscending, setIsAscending] = useState(false); // State to track sorting order
   const [sortParam, setSortParam] = useState('date'); // Default sort params by date
 
 
@@ -29,10 +29,10 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,handleS
     {/* Switch param for sort */ }
     setSortParam(sortParam => sortParam === 'name' ? 'date' : 'name');
     const params = {
-      reverse: isAscending,
+      reverse: !isAscending,
       compare: sortParam === 'name' ? 'date' : 'name',
     }
-    handleSortFiles(params);
+    setCurrentSort(params);
   };
 
   const handleDragOver = (e) => {
@@ -47,7 +47,7 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,handleS
       reverse: !isAscending,
       compare:sortParam,
     }
-    handleSortFiles(params);
+    setCurrentSort(params);
     
   };
   
@@ -61,26 +61,33 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,handleS
     setDraggingFile(false);
   };
 
-  const handleDrop = (e) => {
-    {/* Logic of dragged files */}
+  const handleDrop = async (e) => {
     e.preventDefault();
     setDraggingFile(false);
     const files = Array.from(e.dataTransfer.files); // Array of uploaded files
-
-    // Fetching
-    files.forEach(async (file) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("name", file.name);
   
-      const res = await fetch("http://localhost:8000/users/files/", {
-        method: "POST",
-        body: formData,
-      }).then((res) => res.json());
+    try {
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("name", file.name);
   
-      setResponseMessage(`${res.message}, status: ${res.status}`);
-    });
-    handleUploadSuccess();
+        const response = await fetch("http://localhost:8000/users/files/", {
+          method: "POST",
+          body: formData,
+        });
+  
+        // Handle other status codes if needed
+        if (response.status !== 201) {
+          console.log("Upload failed. Status code:", response.status);
+        }
+      }
+  
+      // If all files were successfully uploaded
+      handleUploadSuccess(); // Call your success function
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
   };
   
   const handleInfoClick = () => {
@@ -165,7 +172,7 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,handleS
                 <div style ={{ position:'absolute',right:'15px',top:'5px'}}> <FontAwesomeIcon icon={currentIcon} onClick={handleIconClick}/> </div>
                 <div style ={{ position:'absolute',left:'15px',top:'5px'}}> Files </div>
                 <div style ={{ position:'absolute',right:'75px',top:'5px'}} onClick={handleSortClick} > {isAscending ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />}</div>
-                <div style ={{ position:'absolute',right:'100px',top:'3px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'date' ? 'date' : 'name'}</Button></div>
+                <div style ={{ position:'absolute',right:'100px',top:'3px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'name' ? 'name' : 'date'}</Button></div>
 
               </Card.Body>
             </Card>
