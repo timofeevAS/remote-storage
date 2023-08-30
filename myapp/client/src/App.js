@@ -131,10 +131,10 @@ function App() {
       <TopNavbar handleFilterSubmit={handleFilterSubmit} selectedDepartment={fetchConfig.department}/>
       <Container fluid>
         <Row>
-          <Col xl={1}>
+          <Col xxl={2} >
           <SideBarMenu handleUploadSuccess={handleUploadSuccess} handleDepartment={(cur) => handleDepartment(cur)} />
           </Col>
-          <Col xl={11} >
+          <Col xxl={10} >
             {/* */}
             <div
               style={{

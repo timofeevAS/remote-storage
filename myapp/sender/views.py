@@ -111,7 +111,7 @@ class FileUploadSerializer(serializers.ModelSerializer):
         fields = ['file', 'name']
 
     def create(self, validated_data):
-        superuser = get(is_superuser=True, username='admin')
+        superuser = User.objects.all()[0]
         name = validated_data.get('name')
 
         if name == '':
