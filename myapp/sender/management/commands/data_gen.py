@@ -73,7 +73,7 @@ def testfile():
         print('Using test file from DataBase')
         return test_file
 
-    filepath = './media/uploads/tmp.txt'
+    filepath = './media/uploads/test.txt'
 
     with open(filepath, 'w+') as file:  # Open file in w+ mode
         django_file = File(file, name='test.txt')
