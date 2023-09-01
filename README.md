@@ -27,6 +27,7 @@ python manage.py data_gen
 1. Install Node.js `https://nodejs.org/ru`
 ```
 npm install -g webpack
+npm install babel-loader
 ```
 After agree with other installings.
 
