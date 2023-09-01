@@ -16,7 +16,7 @@ pip install -r requirements.txt
 ```
 
 ```
-python manage.py makemigrations
+python manage.py makemigrations sender
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py data_gen
@@ -26,6 +26,7 @@ python manage.py runserver
 ## To manage frontend:
 1. Install Node.js `https://nodejs.org/ru`
 ```
+npm install -g webpack
 npm run dev
 ```
 

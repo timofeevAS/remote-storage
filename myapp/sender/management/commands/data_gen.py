@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.core.files import File
 
-from myapp import settings
+from pathlib import Path
 from sender.models import MyFile, Task, Department
 
 
@@ -73,6 +73,7 @@ def testfile():
         print('Using test file from DataBase')
         return test_file
 
+    Path("./media/uploads").mkdir(parents=True, exist_ok=True)
     filepath = './media/uploads/test.txt'
 
     with open(filepath, 'w+') as file:  # Open file in w+ mode
