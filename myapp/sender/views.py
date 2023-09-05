@@ -67,6 +67,16 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'owner']
 
 
+class DepartmentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for department
+    """
+
+    class Meta:
+        model = Department
+        fields = ['name', 'id']
+
+
 class OwnerSerializer(serializers.ModelSerializer):
     """
     Serializer for Owner or User
@@ -86,6 +96,7 @@ class FileListSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
     task = TaskSerializer()
     owner = OwnerSerializer()
+    department = DepartmentSerializer()
 
     def get_extension(self, obj):
         return obj.name.split('.')[-1] if '.' in obj.name else ''
@@ -98,7 +109,7 @@ class FileListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyFile
-        fields = ['id', 'name', 'extension', 'url', 'size', 'view_amount', 'created_at', 'owner', 'task']
+        fields = ['id', 'name', 'extension', 'url', 'size', 'view_amount', 'created_at', 'owner', 'task', 'department']
 
 
 class FileUploadSerializer(serializers.ModelSerializer):
@@ -108,7 +119,7 @@ class FileUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyFile
-        fields = ['file', 'name']
+        fields = ['file', 'name', 'department']
 
     def create(self, validated_data):
         superuser = User.objects.all()[0]
@@ -129,9 +140,10 @@ class FileUploadSerializer(serializers.ModelSerializer):
                 file=validated_data['file'],
                 owner=superuser,
                 size=validated_data['file'].size,
+                department=validated_data['department']
             )
-        except:
-            raise serializers.ValidationError('Can\'t create file')
+        except Exception as e:
+            raise serializers.ValidationError(f'Can\'t create file. Internal Error {e}')
 
         return my_file
 
@@ -221,8 +233,12 @@ class FileListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        serializer = FileUploadSerializer(data=request.data)
         print(request.data['name'])
+        print(f'selected department: {request.data["department"]}')
+        if request.data["department"] == 'null':
+            request.data["department"] = None
+        serializer = FileUploadSerializer(data=request.data)
+
         if serializer.is_valid():
             my_file = serializer.save()
             return Response({'message': 'File uploaded successfully.', 'file_id': my_file.id},
@@ -235,17 +251,30 @@ class FileUpdateSerializer(serializers.ModelSerializer):
     """
     FILE Update serializer
     """
+    extension = serializers.SerializerMethodField()
+    def get_extension(self, obj):
+        return obj.name.split('.')[-1] if '.' in obj.name else ''
 
     def update(self, instance, validated_data):
+        # Get new name from validated data
+        new_name = validated_data.get('name')
+
+        # Split name by point
+        new_name_parts = new_name.split('.')
+        name = new_name_parts[0] if len(new_name_parts) > 0 else ''
+
+        # Get extension
         extension = instance.name.split('.')[-1] if '.' in instance.name else ''
-        new_name = f"{validated_data['name']}.{extension}"
+
+        # Create new name
+        new_name = f"{name}.{extension}"
         instance.name = new_name
         instance.save()
         return instance
 
     class Meta:
         model = MyFile
-        fields = ['name']
+        fields = ['name', 'extension']
 
 
 class FileUpdateView(APIView):
@@ -266,19 +295,17 @@ class FileUpdateView(APIView):
 
     def put(self, request, pk):
         file = self.get_object(pk)
+        print(request.data)
         serializer = FileUpdateSerializer(file, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class DepartmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Department
-        fields = ['name', 'id']
-
-
+    def get(self, request, pk):
+        file = self.get_object(pk)
+        serializer = FileListSerializer(file, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 

@@ -9,6 +9,37 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedName, setEditedName] = useState(file ? file.name : "");
+  
+  useEffect(() => {
+    {/* Function for async request for get name*/}
+    const fetchFileName = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/users/files/${file.id}/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.status === 200) {
+          const responseData = await response.json();
+          setEditedName((responseData.name));
+        }
+      } catch (error) {
+        console.error("Error fetching file name:", error);
+      }
+    };
+  
+    if (file !== null && file !== -1) {
+      // Вызовем функцию для получения имени только если файл существует
+      fetchFileName();
+    }
+  }, [file]);
+
+
+  const splitByLastDot = (text) => {
+    var index = text.lastIndexOf('.');
+    return text.slice(0, index);
+  }
 
   const handleClose = () => {
     setShowOffcanvas(false);
@@ -18,9 +49,10 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
   }
   const handleShow = () => setShowOffcanvas(true);
   const handleEdit = () => setEditMode(true);
+
   const handleSave = async () => {
     // PUT FETCH 
-    const updatedFile = { ...file, name: editedName };
+    const updatedFile = { name: editedName + '.' + file.extension };
     const response = await fetch(`http://127.0.0.1:8000/users/files/${file.id}/`, {
       method: "PUT",
       headers: {
@@ -31,12 +63,13 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
 
     if (response.status === 200) {
       const responseData = await response.json();
-      setEditedName(responseData.name);
+      setEditedName(splitByLastDot(responseData.name));
+      file.name=splitByLastDot(responseData.name);
+      setSelectedFile({...file, name: editedName});
     }
     setEditMode(false);
-    setFileDetailsVisible(false);
-    handleUploadSuccess();
-    
+    setInfoButtonState(true);
+    //handleUploadSuccess()
   };
 
   const formatBytes = (bytes, decimals = 2) => {
@@ -93,7 +126,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
                       onChange={(e) => setEditedName(e.target.value)}
                     />
                   ) : (
-                    file.name
+                    editedName 
                   )}
                 </h2>
                 <p>Extension: {file.extension}</p>

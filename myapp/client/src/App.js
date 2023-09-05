@@ -31,10 +31,10 @@ function App() {
   console.log('Current fetch config  ===>',fetchConfig);
   
 
-  const handleClearFilters = () => {
+  const handleClearFilters = (maybeDepartment = null) => {
     {/* Method to clear filters */}
     setFetchConfig({
-      department: null,
+      department: maybeDepartment,
       search: null,
       uploadDateFrom: null,
       uploadDateTo: null,
@@ -106,7 +106,8 @@ function App() {
   const handleUploadSuccess = () => {
     {/* While data upload success -> fetching new data from API */}
     fetchFileData();
-    handleClearFilters();
+    curDepartment = fetchConfig['department'];
+    handleClearFilters(maybeDepartment=curDepartment);
   }
 
 
@@ -152,7 +153,7 @@ function App() {
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (
                 <>
-                  {<FileDetailsCanvas file={selectedFile} setFileDetailsVisible={setFileDetailsVisible} setInfoButtonState={setInfoButtonState}/>}
+                  {<FileDetailsCanvas file={selectedFile} setFileDetailsVisible={setFileDetailsVisible} setSelectedFile={setSelectedFile} setInfoButtonState={setInfoButtonState} handleUploadSuccess={()=>handleUploadSuccess()}/>}
                 </>
               )}
             </div>
