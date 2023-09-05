@@ -5,7 +5,7 @@ import { faPencil,faCheck,faDownload } from '@fortawesome/free-solid-svg-icons';
 
 
 
-const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInfoButtonState }) => {
+const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInfoButtonState,handleUploadSuccess }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedName, setEditedName] = useState(file ? file.name : "");
@@ -35,13 +35,34 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
     }
     setEditMode(false);
     setFileDetailsVisible(false);
+    handleUploadSuccess();
     
   };
 
+  const formatBytes = (bytes, decimals = 2) => {
+    if (!+bytes) return '0 Bytes'
 
-  function capitalizeFirstLetter(string) {
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+}
+
+  const capitalizeFirstLetter= (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
+
+  const toLocalTime = (time) => {
+    const utcDate = new Date(time);
+    // Convert to localTime
+    const localDate = utcDate.toLocaleString();
+    return localDate;
+  }
+
+
   
   useEffect(() => {
     if (file !== -1) {
@@ -77,10 +98,10 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
                 </h2>
                 <p>Extension: {file.extension}</p>
 		            <p>Id: {file.id}</p>
-                <p>Size: {file.size}</p>
+                <p>Size: {formatBytes(file.size)}</p>
                 <p>Task: {file.task != null ? file.task.name : "None"}</p>
                 <p>Owner: {capitalizeFirstLetter(file.owner.username)}</p>
-                <p>Date upload: {file.created_at}</p>
+                <p>Date upload: {toLocalTime(file.created_at)}</p>
                 <h6>Любая инфо о файле, мб сюда пихнуть возможность его редачить</h6>
                 {/* Остальной контент */}
                 {editMode ? (
@@ -92,7 +113,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
                     <FontAwesomeIcon icon={faPencil} size="sm" />
                   </Button>
                 )}
-                <Button variant="ligth" href={apiUrl+file.url} href={apiUrl+file.url} download target="_blank" rel="noreferrer" style={{position:'relative', left:'200px',bottom:'290px'}}>
+                <Button variant="ligth" href={apiUrl+file.url} download target="_blank" rel="noreferrer" style={{position:'relative', left:'200px',bottom:'290px'}}>
                   <FontAwesomeIcon icon={faDownload} size="sm" />
                 </Button>
               </>
