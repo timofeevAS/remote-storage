@@ -28,7 +28,7 @@ function App() {
   const isMobile = window.innerWidth <= 768;
     
   { /*Output current fetch configuration*/ }
-  console.log('Current fetch config  ===>',fetchConfig);
+  //console.log('Current fetch config  ===>',fetchConfig);
   
 
   const handleClearFilters = (maybeDepartment = null) => {
@@ -44,7 +44,7 @@ function App() {
 
   const handleSortFiles = (sortParams, data) => {
     { /*Method to sorting file data*/ }
-    console.log('Sorting files... ===>',sortParams,data);
+    //console.log('Sorting files... ===>',sortParams,data);
     const sortedFileData = [...data].sort((a, b) => {
       if(sortParams.compare === 'name'){
         const nameA = a.name.toLowerCase();
@@ -64,7 +64,7 @@ function App() {
 
     setFileData(sortedFileData);
     setCurrentSort(sortParams);
-    console.log('Sorted files:', sortedFileData);
+    //console.log('Sorted files:', sortedFileData);
   }
 
   const handleSelectedFile = (file) => {

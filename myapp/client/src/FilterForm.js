@@ -11,7 +11,7 @@ const options = [
   
 
 
-const FilterForm = ({ handleFilterSubmit, initFilters }) => {
+const FilterForm = ({ handleFilterSubmit, initFilters,handleApplyFilters }) => {
   { /* Filter form in search bar */ }
   const [uploadDateFrom, setUploadDateFrom] = useState(initFilters.uploadDateFrom || '');
   const [uploadDateTo, setUploadDateTo] = useState(initFilters.uploadDateTo || '');
@@ -25,7 +25,7 @@ const FilterForm = ({ handleFilterSubmit, initFilters }) => {
       selectedFileType,
       // Add other filters here
     };
-    handleFilterSubmit(filters);
+    handleApplyFilters(filters);
   };
 
   const handleClear = (e) => {
@@ -33,6 +33,12 @@ const FilterForm = ({ handleFilterSubmit, initFilters }) => {
     setUploadDateFrom('');
     setUploadDateTo('');
     setSelectedFileType('');
+    const filters = {
+      uploadDateFrom: null ,
+      uploadDateTo: null,
+      selectedFileType:null,
+    };
+    handleFilterSubmit(filters)
   };
 
   
