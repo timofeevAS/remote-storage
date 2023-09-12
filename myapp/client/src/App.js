@@ -144,12 +144,14 @@ function App() {
               }}
             >
               <FileContainer 
+              
               handleSelectedFile={handleSelectedFile} 
               fileData={fileData} 
               setCurrentSort={(params)=>setCurrentSort(params)} 
               handleUploadSuccess={()=>handleUploadSuccess()}
               infoButtonClicked={infoButtonClicked}
-              setInfoButtonState={setInfoButtonState}/>
+              setInfoButtonState={setInfoButtonState}
+              fetchConfig={fetchConfig}/>
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (
                 <>
