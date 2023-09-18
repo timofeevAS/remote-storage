@@ -28,7 +28,7 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
   };
 
   const handleUploadClick = () => {
-    setShowUploadForm(true);
+    setShowUploadForm(!showUploadForm);
   };
 
   const closeUploadForm = () => {
@@ -53,8 +53,16 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
       handleDepartment(selectedDepartment.name);
     } 
   }
+  
+  const cureentDepId = () => {
+    for (const dep of departments){
+      if (dep.name==activeDepartment){
+        return dep
+      }
+    }
+    return {name:'All'}
+  }
 
-  console.log
   return (
     <Nav defaultActiveKey="/home" className="flex-column">
       <Button
@@ -65,7 +73,12 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
       >
         <FontAwesomeIcon icon={faDownload} className="DeleteButton" /> Upload
       </Button>
-      {showUploadForm && <UploadForm onClose={closeUploadForm} handleUploadSuccess={handleUploadSuccess} />}
+      {showUploadForm && 
+      <UploadForm 
+        onClose={closeUploadForm} 
+        handleUploadSuccess={handleUploadSuccess} 
+        dep={cureentDepId()}
+      />}
       
       
       <h6>Разделы, задачи хранятся тут</h6>

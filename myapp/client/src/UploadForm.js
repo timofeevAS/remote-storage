@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-export default function UploadForm({ handleUploadSuccess }) {
+export default function UploadForm({ handleUploadSuccess, dep }) {
   const { register, handleSubmit } = useForm();
   const [responseMessage, setResponseMessage] = useState("");
 
@@ -13,7 +13,8 @@ export default function UploadForm({ handleUploadSuccess }) {
     const formData = new FormData();
     formData.append("file", data.file[0]);
     formData.append("name", data.name);
-  
+    formData.append("department", dep.name !== 'All' ? dep.id : null);
+
     const res = await fetch("http://localhost:8000/users/files/", {
       method: "POST",
       body: formData,
