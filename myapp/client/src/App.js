@@ -42,6 +42,17 @@ function App() {
     });
   };
 
+  const clearFilters = () => {
+    {/* Method to clear filters */}
+    setFetchConfig({
+      ...fetchConfig,
+      search: null,
+      uploadDateFrom: null,
+      uploadDateTo: null,
+      selectedFileType: null,
+    });
+  };
+
   const handleSortFiles = (sortParams, data) => {
     { /*Method to sorting file data*/ }
     //console.log('Sorting files... ===>',sortParams,data);
@@ -151,7 +162,9 @@ function App() {
               handleUploadSuccess={()=>handleUploadSuccess()}
               infoButtonClicked={infoButtonClicked}
               setInfoButtonState={setInfoButtonState}
-              fetchConfig={fetchConfig}/>
+              filterConfig={fetchConfig}
+              clearFilters={clearFilters}
+              />
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (
                 <>

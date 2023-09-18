@@ -2,8 +2,9 @@ import React, { useState,useEffect,useMemo } from "react";
 import { Container, Row, Col, Navbar, Nav, Card, Button } from 'react-bootstrap';
 import FileCard from "./FileCard";
 import FileLine from "./FileLine";
-import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown, faXmark} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { filter } from "lodash";
 
 const fileData1 = [
   { id: '1', name: 'File 1', extension: 'txt', size: '1mb', url: 'https://example.com/file1.txt' },
@@ -14,8 +15,7 @@ const fileData1 = [
 ];
 
 
-function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setCurrentSort, infoButtonClicked, setInfoButtonState,fetchConfig }) {
-  console.log('FILE CONTAINER JS - render');
+function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setCurrentSort, infoButtonClicked, setInfoButtonState,filterConfig, clearFilters }) {
   const [currentIcon, setCurrentIcon] = useState(faList);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedFileCard, setSelectedFileCard] = useState(null);
@@ -118,7 +118,6 @@ function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setC
   }
 
   useEffect(() => {
-    console.log('Clicked on Info button', infoButtonClicked);
     if (infoButtonClicked) {
       handleSelectedFile(selectedFileCard);
     } else {
@@ -187,15 +186,32 @@ function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setC
 
   const currentFilters = () => {
     {/* Method to query lining filters*/}
-    var filterQuery = '\tFiltration confirmed';
-    for (const filter in fetchConfig){
-      console.log('Filters process',filter,fetchConfig.filter)
-      if(filter !== 'department' && filter !== 'search' && (fetchConfig.filter !== null && fetchConfig.filter !== undefined)){
-        
-        return filterQuery;
-      }
+    var filterQuery = '';
+    
+    const checkIsNotNull = (myObj) => {
+     return  (myObj !== null && myObj !== '' ? true : false);
     }
-    return '';
+
+    if (checkIsNotNull(filterConfig.search) && false){
+      filterQuery+=' Поиск по названию: '+filterConfig.search;
+    }
+    if (checkIsNotNull(filterConfig.uploadDateFrom)){
+      filterQuery+=' Дата загрузки: '+filterConfig.uploadDateFrom;
+      
+      if(checkIsNotNull(filterConfig.uploadDateTo)){
+        filterQuery+=' -- ' + filterConfig.uploadDateTo;
+      }
+      else
+      {
+        filterQuery+=' -- сегодня';
+      }
+
+    }
+    if(checkIsNotNull(filterConfig.selectedFileType)){
+      filterQuery+=' Выбранные типы файлов: '+filterConfig.selectedFileType;
+    }
+
+    return filterQuery !== '' ? "FILTERS: "+filterQuery : filterQuery;
   }
   return (
     <div >
@@ -204,7 +220,7 @@ function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setC
               <Card.Body>
                 <div style ={{ position:'absolute',right:'45px',top:'5px',color: infoButtonClicked ? 'lightblue' : 'black'}}> <FontAwesomeIcon icon={faInfoCircle} onClick={handleInfoClick} /> </div>
                 <div style ={{ position:'absolute',right:'15px',top:'5px'}}> <FontAwesomeIcon icon={currentIcon} onClick={handleIconClick}/> </div>
-                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5>{currentFilters()} {mostDepartment() !== null ? mostDepartment().name.toUpperCase() : "Without department"} </h5></div>
+                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5> {mostDepartment() !== null ? mostDepartment().name.toUpperCase() : "Without department"} </h5></div>
                 <div style ={{ position:'absolute',right:'75px',top:'5px'}} onClick={handleSortClick} > {isAscending ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />}</div>
                 <div style ={{ position:'absolute',right:'100px',top:'2px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'name' ? 'name' : 'date'}</Button></div>
 
@@ -222,6 +238,16 @@ function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setC
           backgroundColor: draggingFile ? '#9fc5e8' : 'transparent',
         }}>
         <h6>Справка: файлы и папки располагаются в этом контейнере</h6>
+        <h6>
+        {currentFilters()}  
+        {currentFilters() !== '' && (
+          <FontAwesomeIcon
+            icon={faXmark}
+            onClick={clearFilters}
+            style={{ cursor: 'pointer' }}
+          />
+        )}
+        </h6>
         <Row className="">{fileCards}</Row>
       </Container>
     </div>
