@@ -4,6 +4,7 @@ from django.db.models import FileField
 from django.forms import forms
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext_lazy as _
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 class ContentTypeRestrictedFileField(FileField):
@@ -49,9 +50,21 @@ class Task(models.Model):
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
+
 class Department(models.Model):
     name = models.CharField(max_length=50)
     chief = models.ForeignKey(to=User, on_delete=models.CASCADE)
+
+
+class Folder(MPTTModel):
+    name = models.CharField(max_length=255)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.CASCADE)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 class MyFile(models.Model):
@@ -66,8 +79,6 @@ class MyFile(models.Model):
     size = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     view_amount = models.PositiveIntegerField(default=0)
-    task = models.ForeignKey(to=Task, on_delete=models.CASCADE,null=True)
-    department = models.ForeignKey(to=Department, on_delete=models.CASCADE,null=True)
-
-
-
+    task = models.ForeignKey(to=Task, on_delete=models.CASCADE, null=True)
+    department = models.ForeignKey(to=Department, on_delete=models.CASCADE, null=True)
+    folder = models.ForeignKey(to=Folder, on_delete=models.CASCADE, null=True)
