@@ -110,7 +110,7 @@ const TopNavbar = ({ handleFilterSubmit,selectedDepartment }) => {
               <Modal.Title>Filter Files</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <FilterForm handleFilterSubmit={handleApplyFilters} initFilters={filters} />
+              <FilterForm handleFilterSubmit={handleFilterSubmit} initFilters={filters} handleApplyFilters={handleApplyFilters}/>
             </Modal.Body>
           </Modal>
         </Navbar.Collapse>

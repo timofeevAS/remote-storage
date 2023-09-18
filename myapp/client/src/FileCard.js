@@ -88,13 +88,13 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
       </Card.Body>
       <Card.Link href='#' style={{ position: 'absolute', top: '13px', right: '15px' }}>
         <div style={{ position: "relative", display: "inline-block" }}>
-            {openMenu === file.id && 
+            {file.id-1 === file.id && 
               <ContextMenu 
                 handleMenuItemClick={handleMenuItemClick} 
                 position={contextMenuPosition} 
           />}
           <div onClick={() => handleMenuClick(file.id)}>
-            <FontAwesomeIcon icon={faInfoCircle} className="infoButton" size="xs" />
+            
           </div>
         </div>
       </Card.Link>

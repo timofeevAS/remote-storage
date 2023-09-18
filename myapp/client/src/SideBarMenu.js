@@ -8,7 +8,8 @@ import UploadForm from "./UploadForm";
 const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [departments, setDepartments] = useState([]);
-  const [activeDepartment, setActiveDepartment] = useState(null);
+  const [activeDepartment, setActiveDepartment] = useState('All');
+  const allDep = {name:'All'};
 
   useEffect(() => {
     // Fetch departments when the component mounts
@@ -19,12 +20,12 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
     try {
       const response = await fetch("http://127.0.0.1:8000/users/files/departments");
       const data = await response.json();
-      setDepartments(data); // Assuming the response has a 'departments' property
+      const departmentsWithAll = [{ name: 'All' },...data];
+      setDepartments(departmentsWithAll);
     } catch (error) {
       console.error("Error fetching departments:", error);
     }
   };
-
 
   const handleUploadClick = () => {
     setShowUploadForm(true);
@@ -36,8 +37,15 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
 
   const handleDepartmentChange = (selectedDepartment) => {
     {/* Handle to control selected department, if it double selected -> disable it */}
+    console.log(selectedDepartment);
+    if(selectedDepartment.name==='All'){
+      setActiveDepartment('All');
+      handleDepartment(null);
+      return;
+    }
+    
     if(activeDepartment === selectedDepartment.name){
-      setActiveDepartment(null);
+      setActiveDepartment('All');
       handleDepartment(null);
     }
     else{

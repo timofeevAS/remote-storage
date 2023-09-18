@@ -28,13 +28,13 @@ function App() {
   const isMobile = window.innerWidth <= 768;
     
   { /*Output current fetch configuration*/ }
-  console.log('Current fetch config  ===>',fetchConfig);
+  //console.log('Current fetch config  ===>',fetchConfig);
   
 
-  const handleClearFilters = () => {
+  const handleClearFilters = (maybeDepartment = null) => {
     {/* Method to clear filters */}
     setFetchConfig({
-      department: null,
+      department: maybeDepartment,
       search: null,
       uploadDateFrom: null,
       uploadDateTo: null,
@@ -44,7 +44,7 @@ function App() {
 
   const handleSortFiles = (sortParams, data) => {
     { /*Method to sorting file data*/ }
-    console.log('Sorting files... ===>',sortParams,data);
+    //console.log('Sorting files... ===>',sortParams,data);
     const sortedFileData = [...data].sort((a, b) => {
       if(sortParams.compare === 'name'){
         const nameA = a.name.toLowerCase();
@@ -64,7 +64,7 @@ function App() {
 
     setFileData(sortedFileData);
     setCurrentSort(sortParams);
-    console.log('Sorted files:', sortedFileData);
+    //console.log('Sorted files:', sortedFileData);
   }
 
   const handleSelectedFile = (file) => {
@@ -106,7 +106,8 @@ function App() {
   const handleUploadSuccess = () => {
     {/* While data upload success -> fetching new data from API */}
     fetchFileData();
-    handleClearFilters();
+    curDepartment = fetchConfig['department'];
+    handleClearFilters(maybeDepartment=curDepartment);
   }
 
 
@@ -143,16 +144,18 @@ function App() {
               }}
             >
               <FileContainer 
+              
               handleSelectedFile={handleSelectedFile} 
               fileData={fileData} 
               setCurrentSort={(params)=>setCurrentSort(params)} 
               handleUploadSuccess={()=>handleUploadSuccess()}
               infoButtonClicked={infoButtonClicked}
-              setInfoButtonState={setInfoButtonState}/>
+              setInfoButtonState={setInfoButtonState}
+              fetchConfig={fetchConfig}/>
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (
                 <>
-                  {<FileDetailsCanvas file={selectedFile} setFileDetailsVisible={setFileDetailsVisible} setInfoButtonState={setInfoButtonState}/>}
+                  {<FileDetailsCanvas file={selectedFile} setFileDetailsVisible={setFileDetailsVisible} setSelectedFile={setSelectedFile} setInfoButtonState={setInfoButtonState} handleUploadSuccess={()=>handleUploadSuccess()}/>}
                 </>
               )}
             </div>

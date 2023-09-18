@@ -14,15 +14,35 @@ const fileData1 = [
 ];
 
 
-function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,setCurrentSort,infoButtonClicked,setInfoButtonState }) {
+function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setCurrentSort, infoButtonClicked, setInfoButtonState,fetchConfig }) {
   console.log('FILE CONTAINER JS - render');
   const [currentIcon, setCurrentIcon] = useState(faList);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedFileCard, setSelectedFileCard] = useState(null);
-  //const [infoButtonClicked, setInfoButtonState] = useState(false);
   const [draggingFile, setDraggingFile] = useState(false);
   const [isAscending, setIsAscending] = useState(true); // State to track sorting order
   const [sortParam, setSortParam] = useState('date'); // Default sort params by date
+  
+  const mostDepartment = () => {
+    {/* Function to find most department*/}
+    if (fileData.length === 0 && fileData[0] !== null) {
+      return null;
+    }
+  
+    // Get dep from first element
+    const firstDepartment = fileData[0].department ;
+  
+    // Checking if all files into one dep
+    for (const file of fileData) {
+      if(file.department === null){
+        return null;
+      }
+      if (file.department.name !== firstDepartment.name) {
+        return null;
+      }
+    }
+    return firstDepartment; // Return our department
+  }
 
 
   const handleSortParamChange = () => {
@@ -71,6 +91,9 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,setCurr
         const formData = new FormData();
         formData.append("file", file);
         formData.append("name", file.name);
+        const dep = mostDepartment();
+        formData.append("department", dep !== null ? dep.id : null);
+        
   
         const response = await fetch("http://localhost:8000/users/files/", {
           method: "POST",
@@ -162,7 +185,18 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,setCurr
     ));
   }, [fileData, currentIcon, openMenu, handleMenuClick, handleMenuItemClick, handleCardClick, selectedFileCard]);
 
-
+  const currentFilters = () => {
+    {/* Method to query lining filters*/}
+    var filterQuery = '\tFiltration confirmed';
+    for (const filter in fetchConfig){
+      console.log('Filters process',filter,fetchConfig.filter)
+      if(filter !== 'department' && filter !== 'search' && (fetchConfig.filter !== null && fetchConfig.filter !== undefined)){
+        
+        return filterQuery;
+      }
+    }
+    return '';
+  }
   return (
     <div >
         <Container>
@@ -170,7 +204,7 @@ function FileContainer({ handleSelectedFile,fileData,handleUploadSuccess,setCurr
               <Card.Body>
                 <div style ={{ position:'absolute',right:'45px',top:'5px',color: infoButtonClicked ? 'lightblue' : 'black'}}> <FontAwesomeIcon icon={faInfoCircle} onClick={handleInfoClick} /> </div>
                 <div style ={{ position:'absolute',right:'15px',top:'5px'}}> <FontAwesomeIcon icon={currentIcon} onClick={handleIconClick}/> </div>
-                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> Files </div>
+                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5>{currentFilters()} {mostDepartment() !== null ? mostDepartment().name.toUpperCase() : "Without department"} </h5></div>
                 <div style ={{ position:'absolute',right:'75px',top:'5px'}} onClick={handleSortClick} > {isAscending ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />}</div>
                 <div style ={{ position:'absolute',right:'100px',top:'2px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'name' ? 'name' : 'date'}</Button></div>
 
