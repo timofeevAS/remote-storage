@@ -24,10 +24,10 @@ python manage.py data_gen
 ```
 
 ## To manage frontend:
-1. Install Node.js `https://nodejs.org/ru`
+1. Install Node.js `https://nodejs.org`
 ```
-npm install -g webpack
-npm install babel-loader
+cd .\myapp\
+npm install
 ```
 After agree with other installings.
 
@@ -36,6 +36,7 @@ npm run dev
 ```
 
 ## Let's launch:
+Open new terminal, after this type:
 ```commandline
 python manage.py runserver
 ```
