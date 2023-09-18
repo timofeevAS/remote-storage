@@ -23,6 +23,7 @@ function App() {
     reverse:true,
     compare:'date'
   })
+  const [needToClear, setNeedToClear] = useState(false);
 
   { /*Flag to check is mobile device*/ }
   const isMobile = window.innerWidth <= 768;
@@ -51,6 +52,7 @@ function App() {
       uploadDateTo: null,
       selectedFileType: null,
     });
+    setNeedToClear(!needToClear);
   };
 
   const handleSortFiles = (sortParams, data) => {
@@ -140,7 +142,7 @@ function App() {
 
   return (
     <>
-      <TopNavbar handleFilterSubmit={handleFilterSubmit} selectedDepartment={fetchConfig.department}/>
+      <TopNavbar handleFilterSubmit={handleFilterSubmit} selectedDepartment={fetchConfig.department} needToClear={needToClear}/>
       <Container fluid>
         <Row>
           <Col xxl={2} >

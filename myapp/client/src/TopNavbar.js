@@ -1,4 +1,4 @@
-import React, { useState,useMemo,useCallback } from "react";
+import React, { useState,useMemo,useCallback,useEffect } from "react";
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -30,7 +30,7 @@ const SquareButton = styled.div`
 `;
 
 
-const TopNavbar = ({ handleFilterSubmit,selectedDepartment }) => {
+const TopNavbar = ({ handleFilterSubmit,selectedDepartment, needToClear }) => {
   const [searchQuery, setSearchQuery] = useState(""); // State for search bar query
   const [showFilterModal, setShowFilterModal] = useState(false); // State for Filters 
   const [filters, setFilters] = useState({
@@ -70,6 +70,16 @@ const TopNavbar = ({ handleFilterSubmit,selectedDepartment }) => {
   const handleCloseFilterModal = () => {
     setShowFilterModal(false);
   };
+
+  const clearSearchQuery = () => {
+    setSearchQuery('');
+  }
+
+  useEffect(() => {
+    if (needToClear) {
+      clearSearchQuery();
+    }
+  }, [needToClear]);
   
   return (
     <Navbar expand="lg" className="bg-body-tertiary" bg="ligth">

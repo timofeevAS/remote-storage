@@ -192,7 +192,7 @@ function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setC
      return  (myObj !== null && myObj !== '' ? true : false);
     }
 
-    if (checkIsNotNull(filterConfig.search) && false){
+    if (checkIsNotNull(filterConfig.search)){
       filterQuery+=' Поиск по названию: '+filterConfig.search;
     }
     if (checkIsNotNull(filterConfig.uploadDateFrom)){
