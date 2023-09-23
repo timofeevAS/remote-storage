@@ -243,9 +243,16 @@ class FileListView(APIView):
         if folder_id is not None:
             files = files.filter(folder=folder_id)
 
-        serializer = FileListSerializer(files, many=True)
+        serializer_files = FileListSerializer(files, many=True)
+        folder = Folder.objects.all().get(id=folder_id)
+        serializer_folders = FolderSerializer(folder.get_children(), many=True)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        response_data = {
+            'files':serializer_files.data,
+            'folders':serializer_folders.data,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         print(request.data['name'])
