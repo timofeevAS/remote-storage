@@ -11,12 +11,14 @@ function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileDetailsVisible, setFileDetailsVisible] = useState(false); // Currency state of fileDetails
   const [fileData, setFileData] = useState([]);
+  const [folderData, setFolderData] = useState([])
   const [fetchConfig, setFetchConfig] = useState({
     department:null,
     search:null,
     uploadDateFrom:null,
     uploadDateTo:null,
     selectedFileType:null,
+    folder:null,
     });
   const [infoButtonClicked, setInfoButtonState] = useState(false);
   const [currentSort, setCurrentSort] = useState({
@@ -32,14 +34,33 @@ function App() {
   //console.log('Current fetch config  ===>',fetchConfig);
   
 
+  const resetStateWhileFetch = () => {
+    {/* This method reset state when we switch fetch */}
+  }
+  useEffect(() => {
+    {/* Reset states */}
+    setSelectedFile(-1);
+    setFileDetailsVisible(false);
+    setInfoButtonState(false);
+  }, [fetchConfig]); 
+
+  const handleClickFolder = (folder) => {
+    {/* Method to handle double click on folder card and fetch new data */}
+    setFetchConfig({
+      ...fetchConfig,
+      folder:folder.id,
+    })
+  }
+
   const handleClearFilters = (maybeDepartment = null) => {
     {/* Method to clear filters */}
     setFetchConfig({
-      department: maybeDepartment,
-      search: null,
-      uploadDateFrom: null,
-      uploadDateTo: null,
-      selectedFileType: null,
+      department:null,
+      search:null,
+      uploadDateFrom:null,
+      uploadDateTo:null,
+      selectedFileType:null,
+      folder:null,
     });
   };
 
@@ -109,8 +130,9 @@ function App() {
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
-        // console.log('Fetched data:', data);
-        handleSortFiles(currentSort,data.files);  
+        // here we getting files from Server
+        handleSortFiles(currentSort,data.files);
+        setFolderData(data.folders);
       })
       .catch(error => console.error('Error fetching file data:', error));
   };
@@ -159,13 +181,15 @@ function App() {
               <FileContainer 
               
               handleSelectedFile={handleSelectedFile} 
-              fileData={fileData} 
+              fileData={fileData}
+              folderData={folderData} 
               setCurrentSort={(params)=>setCurrentSort(params)} 
               handleUploadSuccess={()=>handleUploadSuccess()}
               infoButtonClicked={infoButtonClicked}
               setInfoButtonState={setInfoButtonState}
               filterConfig={fetchConfig}
               clearFilters={clearFilters}
+              handleClickFolder={handleClickFolder}
               />
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (

@@ -86,14 +86,16 @@ class OwnerSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username']
 
+
 class FolderSerializer(serializers.ModelSerializer):
     """
     Serializer for Folder
     """
+    owner = OwnerSerializer()
 
     class Meta:
         model = Folder
-        fields = ['id','name']
+        fields = ['id', 'name', 'owner']
 
 
 class FileListSerializer(serializers.ModelSerializer):
@@ -119,7 +121,8 @@ class FileListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyFile
-        fields = ['id', 'name', 'extension', 'url', 'size', 'view_amount', 'created_at', 'owner', 'task', 'department', 'folder']
+        fields = ['id', 'name', 'extension', 'url', 'size', 'view_amount', 'created_at', 'owner', 'task', 'department',
+                  'folder']
 
 
 class FileUploadSerializer(serializers.ModelSerializer):
@@ -249,8 +252,8 @@ class FileListView(APIView):
         serializer_folders = FolderSerializer(folder.get_children(), many=True)
 
         response_data = {
-            'files':serializer_files.data,
-            'folders':serializer_folders.data,
+            'files': serializer_files.data,
+            'folders': serializer_folders.data,
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
@@ -275,6 +278,7 @@ class FileUpdateSerializer(serializers.ModelSerializer):
     FILE Update serializer
     """
     extension = serializers.SerializerMethodField()
+
     def get_extension(self, obj):
         return obj.name.split('.')[-1] if '.' in obj.name else ''
 
@@ -329,7 +333,6 @@ class FileUpdateView(APIView):
         file = self.get_object(pk)
         serializer = FileListSerializer(file, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 class DepartmentViewList(APIView):

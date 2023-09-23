@@ -1,6 +1,7 @@
 import React, { useState,useEffect,useMemo } from "react";
 import { Container, Row, Col, Navbar, Nav, Card, Button } from 'react-bootstrap';
 import FileCard from "./FileCard";
+import FolderCard from './FolderCard';
 import FileLine from "./FileLine";
 import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown, faXmark} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,7 +16,7 @@ const fileData1 = [
 ];
 
 
-function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setCurrentSort, infoButtonClicked, setInfoButtonState,filterConfig, clearFilters }) {
+function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSuccess, setCurrentSort, infoButtonClicked, setInfoButtonState,filterConfig, clearFilters, handleClickFolder }) {
   const [currentIcon, setCurrentIcon] = useState(faList);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedFileCard, setSelectedFileCard] = useState(null);
@@ -184,6 +185,25 @@ function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setC
     ));
   }, [fileData, currentIcon, openMenu, handleMenuClick, handleMenuItemClick, handleCardClick, selectedFileCard]);
 
+
+  const folderCards = useMemo(() => {
+    return folderData.map((folder, index) => (
+      <Col key={index} md={2}>
+        {/* Folder cards using with useMemo */}
+        <FolderCard
+          folder={folder}
+          handleMenuClick={handleMenuClick}
+          openMenu={openMenu}
+          handleMenuItemClick={handleMenuItemClick}
+          handleCardClick={handleCardClick}
+          isSelected={folder === selectedFileCard}
+          handleClickFolder={handleClickFolder}
+        />
+      </Col>
+    ));
+  }, [folderData, currentIcon, openMenu, handleMenuClick, handleMenuItemClick, handleCardClick, selectedFileCard]);
+
+
   const currentFilters = () => {
     {/* Method to query lining filters*/}
     var filterQuery = '';
@@ -248,7 +268,7 @@ function FileContainer({ handleSelectedFile, fileData, handleUploadSuccess, setC
           />
         )}
         </h6>
-        <Row className="">{fileCards}</Row>
+        <Row className="">{folderCards}{fileCards}</Row>
       </Container>
     </div>
   );
