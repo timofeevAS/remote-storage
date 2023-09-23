@@ -184,6 +184,7 @@ class FileListView(APIView):
     def get(self, request):
         # All files
         files = MyFile.objects.all()
+        folder = Folder.objects.first().get_root()
 
         # Get params from request
         department_param = request.GET.get('department', None)
@@ -244,7 +245,7 @@ class FileListView(APIView):
             files = files.filter(folder=folder_id)
 
         serializer_files = FileListSerializer(files, many=True)
-        folder = Folder.objects.all().get(id=folder_id)
+        folder = folder if (folder_id is None) else Folder.objects.all().get(id=folder_id)
         serializer_folders = FolderSerializer(folder.get_children(), many=True)
 
         response_data = {

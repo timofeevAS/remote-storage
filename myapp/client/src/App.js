@@ -110,7 +110,7 @@ function App() {
       .then(response => response.json())
       .then(data => {
         // console.log('Fetched data:', data);
-        handleSortFiles(currentSort,data);  
+        handleSortFiles(currentSort,data.files);  
       })
       .catch(error => console.error('Error fetching file data:', error));
   };
