@@ -231,9 +231,10 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
   
   const fileCards = useMemo(() => {
     return fileData.map((file, index) => (
-      <Col key={index} md={2} >
+      <Col key={index}>
         {currentIcon === faList ? (
           <FileCard 
+            style={{ flex: '0 0 20%', margin: '10px' }}
             file={file} 
             handleMenuClick={handleMenuClick} 
             openMenu={openMenu} 
@@ -256,7 +257,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
 
   const folderCards = useMemo(() => {
     return folderData.map((folder, index) => (
-      <Col key={index} md={2}>
+      <Col key={index}>
         {/* Folder cards using with useMemo */}
         <FolderCard
           folder={folder}
@@ -267,6 +268,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
           isSelected={folder === selectedFileCard}
           handleClickFolder={handleClickFolder}
           setFolderHistory={setFolderHistory}
+          style={{ flex: '0 0 20%', margin: '10px' }}
         />
       </Col>
     ));
@@ -321,7 +323,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
   }
 
   return (
-    <div >
+    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         <Container>
             <Card style={{outline:'none',border:'none', margin:'5px'}}>
               <Card.Body>
@@ -363,7 +365,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
           />
         )}
         </h6>
-        <Row className="">{folderCards}{fileCards}</Row>
+        <Row className="" style={{ display: 'flex', flexWrap: 'wrap' }}>{folderCards}{fileCards}</Row>
       </Container>
     </div>
   );
