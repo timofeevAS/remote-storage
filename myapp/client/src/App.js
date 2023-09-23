@@ -11,7 +11,8 @@ function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileDetailsVisible, setFileDetailsVisible] = useState(false); // Currency state of fileDetails
   const [fileData, setFileData] = useState([]);
-  const [folderData, setFolderData] = useState([])
+  const [folderData, setFolderData] = useState([]);
+  
   const [fetchConfig, setFetchConfig] = useState({
     department:null,
     search:null,
@@ -46,10 +47,12 @@ function App() {
 
   const handleClickFolder = (folder) => {
     {/* Method to handle double click on folder card and fetch new data */}
+    console.log(folder);
     setFetchConfig({
       ...fetchConfig,
       folder:folder.id,
     })
+    
   }
 
   const handleClearFilters = (maybeDepartment = null) => {

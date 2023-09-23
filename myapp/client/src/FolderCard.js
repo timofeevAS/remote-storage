@@ -15,7 +15,7 @@ function truncateText(text, maxLength) {
 }
 
 
-function FolderCard({ folder, handleMenuClick, openMenu, handleMenuItemClick, handleCardClick, isSelected, handleClickFolder}) {
+function FolderCard({ folder, handleMenuClick, openMenu, handleMenuItemClick, handleCardClick, isSelected, handleClickFolder, setFolderHistory}) {
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const [clickCount, setClickCount] = useState(0);
 
@@ -24,6 +24,7 @@ function FolderCard({ folder, handleMenuClick, openMenu, handleMenuItemClick, ha
       // If double click call handler
       console.log('double clicked');
       handleClickFolder(folder);
+      setFolderHistory((prevHistory) => [...prevHistory, folder]);
       setClickCount(0); // reset if double click
     }
   }, [clickCount, folder, handleClickFolder]);

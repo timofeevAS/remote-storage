@@ -4,7 +4,7 @@ import FileCard from "./FileCard";
 import FolderCard from './FolderCard';
 import FileLine from "./FileLine";
 import CreateFolder from "./CreateFolder"
-import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown, faXmark} from '@fortawesome/free-solid-svg-icons';
+import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown, faXmark, faUndo} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { filter } from "lodash";
 
@@ -25,6 +25,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
   const [isAscending, setIsAscending] = useState(true); // State to track sorting order
   const [sortParam, setSortParam] = useState('date'); // Default sort params by date
   const [userFolder, setUserFolder] = useState(null);
+  const [folderHistory,setFolderHistory] = useState([{id:'',}]); // stack for storage history
   const [userDepartment, setUserDepartment] = useState(null);
   const [showCreateFolderForm, setShowCreateFolderForm] = useState(false);// State for file create modal
   
@@ -265,6 +266,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
           handleCardClick={handleCardClick}
           isSelected={folder === selectedFileCard}
           handleClickFolder={handleClickFolder}
+          setFolderHistory={setFolderHistory}
         />
       </Col>
     ));
@@ -309,6 +311,14 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
     return result;
   }
 
+  const handleBackFolder = () => {
+    {/*This method to back to prev folder, use stack of folders */}
+    console.log(folderHistory, folderHistory.length - 2);
+    const topFolder = folderHistory[folderHistory.length - 2];
+    console.log(topFolder, topFolder.id);
+    handleClickFolder(topFolder);
+    setFolderHistory((prevHistory) => prevHistory.slice(0, -1));
+  }
 
   return (
     <div >
@@ -317,7 +327,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
               <Card.Body>
                 <div style ={{ position:'absolute',right:'45px',top:'5px',color: infoButtonClicked ? 'lightblue' : 'black'}}> <FontAwesomeIcon icon={faInfoCircle} onClick={handleInfoClick} /> </div>
                 <div style ={{ position:'absolute',right:'15px',top:'5px'}}> <FontAwesomeIcon icon={currentIcon} onClick={handleIconClick}/> </div>
-                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5> {headerTitle()} </h5></div>
+                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5> {headerTitle()} {userFolder !== '' && userFolder !== null && <FontAwesomeIcon icon={faUndo} onClick={handleBackFolder} />}  </h5></div>
                 <div style ={{ position:'absolute',right:'75px',top:'5px'}} onClick={handleSortClick} > {isAscending ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />}</div>
                 <div style ={{ position:'absolute',right:'100px',top:'2px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'name' ? 'name' : 'date'}</Button></div>
                 
