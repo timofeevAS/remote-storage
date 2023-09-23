@@ -86,6 +86,15 @@ class OwnerSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username']
 
+class FolderSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Folder
+    """
+
+    class Meta:
+        model = Folder
+        fields = ['id','name']
+
 
 class FileListSerializer(serializers.ModelSerializer):
     """
@@ -97,6 +106,7 @@ class FileListSerializer(serializers.ModelSerializer):
     task = TaskSerializer()
     owner = OwnerSerializer()
     department = DepartmentSerializer()
+    folder = FolderSerializer()
 
     def get_extension(self, obj):
         return obj.name.split('.')[-1] if '.' in obj.name else ''
@@ -109,7 +119,7 @@ class FileListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyFile
-        fields = ['id', 'name', 'extension', 'url', 'size', 'view_amount', 'created_at', 'owner', 'task', 'department']
+        fields = ['id', 'name', 'extension', 'url', 'size', 'view_amount', 'created_at', 'owner', 'task', 'department', 'folder']
 
 
 class FileUploadSerializer(serializers.ModelSerializer):
@@ -181,6 +191,7 @@ class FileListView(APIView):
         upload_date_from = request.GET.get('uploadDateFrom', None)
         upload_date_to = request.GET.get('uploadDateTo', None)
         extensions = request.GET.get('selectedFileType', None)
+        folder_id = request.GET.get('folder', None)
 
         # Match department from params
         if department_param is not None:
@@ -227,6 +238,10 @@ class FileListView(APIView):
                 files = MyFile.objects.none()
             else:
                 files = files.filter(q_objects)  # Filter QuerySet
+
+        # Match Folder with other files
+        if folder_id is not None:
+            files = files.filter(folder=folder_id)
 
         serializer = FileListSerializer(files, many=True)
 

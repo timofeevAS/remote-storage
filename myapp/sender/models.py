@@ -59,6 +59,7 @@ class Department(models.Model):
 class Folder(MPTTModel):
     name = models.CharField(max_length=255)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.CASCADE)
+    created_by = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
 
     class MPTTMeta:
         order_insertion_by = ['name']
