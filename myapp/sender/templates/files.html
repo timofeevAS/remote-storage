@@ -1,26 +1,22 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Файлы SND GROUP</title>
-</head>
-<body>
-    <h1>Загрузка файла</h1>
-    {% if success_message %}
-        <p>{{ success_message }}</p>
-    {% endif %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
 
-    <form action="/users/files/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="file" />
-        <input type="submit" value="Загрузить">
-    </form>
-    <h1>Список файлов</h1>
-    <ul>
-        {% for myfile in files %}
-            <li>
-                <a href="{{ myfile.file.url }}">{{ myfile.file.name }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+  </head>
+
+<body>
+    <title>Файлы SND GROUP</title>
+
+<div id="root"></div>
+    <script src="{% static 'js-bundle.js' %}"></script>
+
 </body>
 </html>
