@@ -5,7 +5,7 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { Nav } from "react-bootstrap";
 import UploadForm from "./UploadForm";
 
-const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
+const SideBarMenu = ({ handleUploadSuccess, handleDepartment,folder }) => {
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [activeDepartment, setActiveDepartment] = useState('All');
@@ -78,6 +78,7 @@ const SideBarMenu = ({ handleUploadSuccess, handleDepartment }) => {
         onClose={closeUploadForm} 
         handleUploadSuccess={handleUploadSuccess} 
         dep={cureentDepId()}
+        folder={folder}
       />}
       
       

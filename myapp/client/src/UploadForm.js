@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-export default function UploadForm({ handleUploadSuccess, dep }) {
+export default function UploadForm({ handleUploadSuccess, dep,folder }) {
   const { register, handleSubmit } = useForm();
   const [responseMessage, setResponseMessage] = useState("");
 
@@ -11,9 +11,14 @@ export default function UploadForm({ handleUploadSuccess, dep }) {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
+    const nullOrEmptyStr = (obj) => {obj !== null && obj !== '' ? true : false};
+
     formData.append("file", data.file[0]);
     formData.append("name", data.name);
-    formData.append("department", dep.name !== 'All' ? dep.id : null);
+    console.log(folder);
+    formData.append("folder",folder !== null ? folder : '');
+    formData.append("department", (dep !== 'All' && nullOrEmptyStr(dep)) ? dep : '');
+    
 
     const res = await fetch("http://localhost:8000/users/files/", {
       method: "POST",

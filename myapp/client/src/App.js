@@ -172,7 +172,7 @@ function App() {
       <Container fluid>
         <Row>
           <Col xxl={2} >
-          <SideBarMenu handleUploadSuccess={handleUploadSuccess} handleDepartment={(cur) => handleDepartment(cur)} />
+          <SideBarMenu handleUploadSuccess={handleUploadSuccess} handleDepartment={(cur) => handleDepartment(cur)} folder={fetchConfig.folder} />
           </Col>
           <Col xxl={10} >
             {/* */}
