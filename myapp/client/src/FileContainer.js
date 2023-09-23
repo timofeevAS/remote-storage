@@ -3,6 +3,7 @@ import { Container, Row, Col, Navbar, Nav, Card, Button } from 'react-bootstrap'
 import FileCard from "./FileCard";
 import FolderCard from './FolderCard';
 import FileLine from "./FileLine";
+import CreateFolder from "./CreateFolder"
 import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown, faXmark} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { filter } from "lodash";
@@ -23,7 +24,67 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
   const [draggingFile, setDraggingFile] = useState(false);
   const [isAscending, setIsAscending] = useState(true); // State to track sorting order
   const [sortParam, setSortParam] = useState('date'); // Default sort params by date
+  const [userFolder, setUserFolder] = useState(null);
+  const [userDepartment, setUserDepartment] = useState(null);
+  const [showCreateFolderForm, setShowCreateFolderForm] = useState(false);// State for file create modal
   
+  const handleCreateFolder = () => {
+    {/* showing modal for create folder */}
+    setShowCreateFolderForm(true);
+  };
+
+  const handleCloseCreateFolderForm = () => {
+    {/* closing modal after creating */}
+    setShowCreateFolderForm(false);
+  };
+
+  
+  const fetchFolder = async () => {
+    {/* Function for async request for get folder name*/}
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/users/folders/${filterConfig.folder}/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        const responseData = await response.json();
+        return responseData;
+      }
+    } catch (error) {
+      console.error("Error fetching file name:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    {/* Effect to change current user folder */}
+    const fetchData = async () => {
+      if (filterConfig.folder !== null && filterConfig.folder !== '') {
+        try {
+          const folder = await fetchFolder();
+          setUserFolder(folder);
+        } catch (error) {
+          console.error("Error fetching folder:", error);
+          setUserFolder(null);
+        }
+      } else {
+        setUserFolder(null);
+      }
+    };
+  
+    fetchData();
+  }, [filterConfig.folder]);
+
+  useEffect( () => {
+    if(filterConfig.department === null || filterConfig.department === ''){
+      setUserDepartment('All');
+      return;
+    }
+    setUserDepartment(filterConfig.department.toUpperCase());
+  },[filterConfig.department])
+
   const mostDepartment = () => {
     {/* Function to find most department*/}
     if (fileData.length === 0 && fileData[0] !== null) {
@@ -233,6 +294,16 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
 
     return filterQuery !== '' ? "FILTERS: "+filterQuery : filterQuery;
   }
+
+  const headerTitle = () => {
+    {/* This method concat mostDepartment and currentFolder */}
+    var result = ''
+    result += userDepartment;
+    result += " " + (userFolder !== null ? userFolder.name.toUpperCase() : " ");
+    return result;
+  }
+
+
   return (
     <div >
         <Container>
@@ -240,12 +311,20 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
               <Card.Body>
                 <div style ={{ position:'absolute',right:'45px',top:'5px',color: infoButtonClicked ? 'lightblue' : 'black'}}> <FontAwesomeIcon icon={faInfoCircle} onClick={handleInfoClick} /> </div>
                 <div style ={{ position:'absolute',right:'15px',top:'5px'}}> <FontAwesomeIcon icon={currentIcon} onClick={handleIconClick}/> </div>
-                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5> {mostDepartment() !== null ? mostDepartment().name.toUpperCase() : "Without department"} </h5></div>
+                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5> {headerTitle()} </h5></div>
                 <div style ={{ position:'absolute',right:'75px',top:'5px'}} onClick={handleSortClick} > {isAscending ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />}</div>
                 <div style ={{ position:'absolute',right:'100px',top:'2px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'name' ? 'name' : 'date'}</Button></div>
-
+                
               </Card.Body>
+                  <CreateFolder
+                   parentFolderId={filterConfig.folder}
+                   onCreate={(newFolder) => {
+                    handleCloseCreateFolderForm();
+                    handleUploadSuccess();
+                  }}
+                  />
             </Card>
+            
         </Container>
       <Container 
       onDragOver={handleDragOver}

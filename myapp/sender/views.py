@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect, Http404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, serializers
+from rest_framework import status, serializers, generics
 
 from django.contrib.auth.models import User
 
@@ -92,10 +92,53 @@ class FolderSerializer(serializers.ModelSerializer):
     Serializer for Folder
     """
     owner = OwnerSerializer()
-
     class Meta:
         model = Folder
         fields = ['id', 'name', 'owner']
+
+    def create(self, validated_data):
+        superuser = User.objects.filter(is_superuser=True).first()
+        name = validated_data.get('name')
+        parent = validated_data.get('parent')
+        if parent is None:
+            parent = Folder.objects.first().get_root()
+
+        try:
+            folder = Folder.objects.create(
+                name=name,
+                owner=superuser,
+                parent=parent
+            )
+        except Exception as e:
+            raise serializers.ValidationError(f'Can\'t create folder. Internal Error {e}')
+
+        return folder
+
+class FolderCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Folder
+    """
+    class Meta:
+        model = Folder
+        fields = ['id', 'name', 'owner']
+
+    def create(self, validated_data):
+        superuser = User.objects.filter(is_superuser=True).first()
+        name = validated_data.get('name')
+        parent = validated_data.get('parent')
+        if parent is None:
+            parent = Folder.objects.first().get_root()
+
+        try:
+            folder = Folder.objects.create(
+                name=name,
+                owner=superuser,
+                parent=parent
+            )
+        except Exception as e:
+            raise serializers.ValidationError(f'Can\'t create folder. Internal Error {e}')
+
+        return folder
 
 
 class FileListSerializer(serializers.ModelSerializer):
@@ -347,3 +390,44 @@ class DepartmentViewList(APIView):
         serializer = DepartmentSerializer(departments, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FolderView(APIView):
+    """
+    View for interact with folders
+    """
+
+    def get_object(self, pk):
+        try:
+            return Folder.objects.get(pk=pk)
+        except Folder.DoesNotExist:
+            raise Http404
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        folder = None
+        if pk is not None:
+            folder = self.get_object(pk)
+
+        serializer = FolderSerializer(folder, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        print(f'Create a folder: {request.data["name"]}\t parent is: {request.data["parent"]}')
+        serializer = FolderCreateSerializer(data=request.data)
+
+        if serializer.is_valid():
+            folder = serializer.save()
+            return Response({'message': 'Folder created successfully.', 'folder_id': folder.id},
+                            status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FolderDetailGeneric(generics.RetrieveAPIView):
+    """
+    Generic for view about folder
+    """
+    queryset = Folder.objects.all()
+    serializer_class = FolderSerializer
+    lookup_field = 'pk'  # use pk for find folder

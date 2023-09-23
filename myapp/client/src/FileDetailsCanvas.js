@@ -5,7 +5,7 @@ import { faPencil,faCheck,faDownload } from '@fortawesome/free-solid-svg-icons';
 
 
 
-const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInfoButtonState,handleUploadSuccess }) => {
+const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInfoButtonState, handleUploadSuccess }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedName, setEditedName] = useState(file ? file.name : "");
