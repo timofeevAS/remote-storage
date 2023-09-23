@@ -54,12 +54,12 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
     handleMenuClick(file.id);
   };
 
-
+  /*
   useEffect(() => {
     console.log("Mounted!");
   }, [])
   console.log('render');
-
+  */
   const handleClick = () => {
     handleCardClick(file);
     console.log(file.id);

@@ -75,15 +75,8 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
     };
   
     fetchData();
+    console.log("userFolder==>",userFolder)
   }, [filterConfig.folder]);
-
-  useEffect( () => {
-    if(filterConfig.department === null || filterConfig.department === ''){
-      setUserDepartment('All');
-      return;
-    }
-    setUserDepartment(filterConfig.department.toUpperCase());
-  },[filterConfig.department])
 
   const mostDepartment = () => {
     {/* Function to find most department*/}
@@ -105,6 +98,17 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
     }
     return firstDepartment; // Return our department
   }
+
+  
+  useEffect(() => {
+    if(filterConfig.department === null || filterConfig.department === ''){
+      setUserDepartment('All');
+      console.log("userDepartment==>",'All');
+      return;
+    }
+    setUserDepartment(filterConfig.department.toUpperCase());
+    console.log("userDepartment==>",filterConfig.department);
+  },[filterConfig.department]);
 
 
   const handleSortParamChange = () => {
@@ -146,15 +150,17 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
   const handleDrop = async (e) => {
     e.preventDefault();
     setDraggingFile(false);
-    const files = Array.from(e.dataTransfer.files); // Array of uploaded files
-  
+    const files = Array.from(e.dataTransfer.files); // Array of uploaded files  
     try {
       for (const file of files) {
         const formData = new FormData();
+        const nullOrEmptyStr = (obj) => {obj !== null && obj !== '' ? true : false};
+
         formData.append("file", file);
         formData.append("name", file.name);
-        const dep = mostDepartment();
-        formData.append("department", dep !== null ? dep.id : null);
+        formData.append("folder",filterConfig.folder !== null ? filterConfig.folder : '');
+        console.log("folder",filterConfig.folder !== null ? filterConfig.folder : '');
+        formData.append("department", (filterConfig.department !== 'All' && nullOrEmptyStr(filterConfig.department)) ? filterConfig.department : '');
         
   
         const response = await fetch("http://localhost:8000/users/files/", {

@@ -52,12 +52,13 @@ function FolderCard({ folder, handleMenuClick, openMenu, handleMenuItemClick, ha
     handleMenuClick(folder.id);
   };
 
-
+  /*
   useEffect(() => {
     console.log("Mounted!");
   }, [])
   console.log('render');
-
+  */
+ 
   const handleClick = () => {
     handleCardClick(folder);
     console.log(folder.id);

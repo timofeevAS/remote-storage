@@ -55,12 +55,12 @@ function App() {
   const handleClearFilters = (maybeDepartment = null) => {
     {/* Method to clear filters */}
     setFetchConfig({
-      department:null,
+      ...fetchConfig,
+      department:maybeDepartment,
       search:null,
       uploadDateFrom:null,
       uploadDateTo:null,
       selectedFileType:null,
-      folder:null,
     });
   };
 
@@ -141,8 +141,9 @@ function App() {
   const handleUploadSuccess = () => {
     {/* While data upload success -> fetching new data from API */}
     fetchFileData();
-    curDepartment = fetchConfig['department'];
-    handleClearFilters(maybeDepartment=curDepartment);
+    var curDepartment = fetchConfig['department'];
+    console.log(curDepartment);
+    handleClearFilters(curDepartment);
   }
 
 

@@ -175,11 +175,13 @@ class FileUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyFile
-        fields = ['file', 'name', 'department']
+        fields = ['file', 'name', 'department','folder']
 
     def create(self, validated_data):
         superuser = User.objects.all()[0]
         name = validated_data.get('name')
+
+
 
         if name == '':
             if 'file' in validated_data:
@@ -196,9 +198,11 @@ class FileUploadSerializer(serializers.ModelSerializer):
                 file=validated_data['file'],
                 owner=superuser,
                 size=validated_data['file'].size,
-                department=validated_data['department']
+                department=validated_data['department'],
+                folder=validated_data['folder']
             )
         except Exception as e:
+
             raise serializers.ValidationError(f'Can\'t create file. Internal Error {e}')
 
         return my_file
@@ -289,6 +293,8 @@ class FileListView(APIView):
         # Match Folder with other files
         if folder_id is not None:
             files = files.filter(folder=folder_id)
+        else:
+            files = files.filter(folder=None)
 
         serializer_files = FileListSerializer(files, many=True)
         folder = folder if (folder_id is None) else Folder.objects.all().get(id=folder_id)
@@ -302,7 +308,7 @@ class FileListView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        print(request.data['name'])
+        print(f'file upload with name: {request.data["name"]}')
         print(f'selected department: {request.data["department"]}')
         if request.data["department"] == 'null':
             request.data["department"] = None
