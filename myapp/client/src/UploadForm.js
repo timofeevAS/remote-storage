@@ -11,13 +11,14 @@ export default function UploadForm({ handleUploadSuccess, dep,folder }) {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
-    const nullOrEmptyStr = (obj) => {obj !== null && obj !== '' ? true : false};
+    const nullOrEmptyStr = (obj) => {return (obj !== null && obj !== '' ? true : false)};
 
     formData.append("file", data.file[0]);
     formData.append("name", data.name);
-    console.log(folder);
+    console.log('dep===>',dep);
+    console.log('condition: ', (dep && dep.name !== 'All'));
     formData.append("folder",folder !== null ? folder : '');
-    formData.append("department", (dep !== 'All' && nullOrEmptyStr(dep)) ? dep : '');
+    formData.append("department", (dep && dep.name !== 'All') ? dep.id : '');
     
 
     const res = await fetch("http://localhost:8000/users/files/", {
