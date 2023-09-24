@@ -60,7 +60,7 @@ class Folder(MPTTModel):
     name = models.CharField(max_length=255)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.CASCADE)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
-
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     class MPTTMeta:
         order_insertion_by = ['name']
 

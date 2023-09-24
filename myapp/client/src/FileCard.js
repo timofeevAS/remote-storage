@@ -67,7 +67,6 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
 
   const apiUrl = 'http://127.0.0.1:8000'
   return (
-    
     <Card onContextMenu={handleContextMenu} onClick={handleClick} style=
     {{ 
       width: '180px', 

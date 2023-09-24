@@ -94,7 +94,7 @@ class FolderSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
     class Meta:
         model = Folder
-        fields = ['id', 'name', 'owner']
+        fields = ['id', 'name', 'owner','created_at']
 
     def create(self, validated_data):
         superuser = User.objects.filter(is_superuser=True).first()

@@ -2,6 +2,7 @@ import React, { useState,useEffect,useMemo } from "react";
 import { Container, Row, Col, Navbar, Nav, Card, Button } from 'react-bootstrap';
 import FileCard from "./FileCard";
 import FolderCard from './FolderCard';
+import FolderLine from './FolderLine';
 import FileLine from "./FileLine";
 import CreateFolder from "./CreateFolder"
 import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown, faXmark, faUndo} from '@fortawesome/free-solid-svg-icons';
@@ -244,10 +245,13 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
           />
         ) : (
           <FileLine 
+            style={{ flex: '0 0 20%', margin: '10px' }}
             file={file} 
             handleMenuClick={handleMenuClick} 
             openMenu={openMenu} 
-            handleMenuItemClick={handleMenuItemClick} 
+            handleMenuItemClick={handleMenuItemClick}
+            handleCardClick={(card) => handleCardClick(card)}
+            isSelected={file === selectedFileCard}
           />
         )}
       </Col>
@@ -259,6 +263,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
     return folderData.map((folder, index) => (
       <Col key={index}>
         {/* Folder cards using with useMemo */}
+        {currentIcon === faList ? (
         <FolderCard
           folder={folder}
           handleMenuClick={handleMenuClick}
@@ -269,8 +274,22 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
           handleClickFolder={handleClickFolder}
           setFolderHistory={setFolderHistory}
           style={{ flex: '0 0 20%', margin: '10px' }}
-        />
+        />) : (
+          <FolderLine
+          folder={folder}
+          handleMenuClick={handleMenuClick}
+          openMenu={openMenu}
+          handleMenuItemClick={handleMenuItemClick}
+          handleCardClick={handleCardClick}
+          isSelected={folder === selectedFileCard}
+          handleClickFolder={handleClickFolder}
+          setFolderHistory={setFolderHistory}
+          style={{ flex: '0 0 20%', margin: '10px' }}   
+          />
+        )}
       </Col>
+
+      
     ));
   }, [folderData, currentIcon, openMenu, handleMenuClick, handleMenuItemClick, handleCardClick, selectedFileCard]);
 
