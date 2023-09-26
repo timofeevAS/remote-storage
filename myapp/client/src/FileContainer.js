@@ -384,7 +384,10 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
           />
         )}
         </h6>
-        <Row className="" style={{ display: 'flex', flexWrap: 'wrap' }}>{folderCards}{fileCards}</Row>
+        <Row className="" style={{ display: 'flex', flexWrap: 'wrap' }}>
+          {folderCards}
+          {fileCards}
+        </Row>
       </Container>
     </div>
   );
