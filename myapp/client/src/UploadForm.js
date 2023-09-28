@@ -14,9 +14,8 @@ export default function UploadForm({ handleUploadSuccess, dep,folder }) {
     const nullOrEmptyStr = (obj) => {return (obj !== null && obj !== '' ? true : false)};
 
     formData.append("file", data.file[0]);
-    formData.append("name", data.name);
-    console.log('dep===>',dep);
-    console.log('condition: ', (dep && dep.name !== 'All'));
+    formData.append("name", data.name !== '' ? data.name : data.file[0].name);
+    console.log(data.name, data.file[0].name);
     formData.append("folder",folder !== null ? folder : '');
     formData.append("department", (dep && dep.name !== 'All') ? dep.id : '');
     

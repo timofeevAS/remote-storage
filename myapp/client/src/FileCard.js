@@ -97,7 +97,7 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
           </div>
         </div>
       </Card.Link>
-      <Card.Text style={{ fontSize: '20px', position: 'absolute', top: '10px', left: '15px', fontWeight: 'bold', color: getColorByExtension(file.extension) }}>
+      <Card.Text style={{ fontSize: '1em', position: 'absolute', top: '10px', left: '15px', fontWeight: 'bold', color: getColorByExtension(file.extension) }}>
         {file.extension.toUpperCase()}
       </Card.Text>
       
