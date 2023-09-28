@@ -30,14 +30,14 @@ const SquareButton = styled.div`
 `;
 
 
-const TopNavbar = ({ handleFilterSubmit,selectedDepartment, needToClear }) => {
+const TopNavbar = ({ handleFilterSubmit,selectedDepartment, needToClear,initFilters }) => {
   const [searchQuery, setSearchQuery] = useState(""); // State for search bar query
   const [showFilterModal, setShowFilterModal] = useState(false); // State for Filters 
   const [filters, setFilters] = useState({
-    uploadDateFrom: '',
-    uploadDateTo: '',
-    selectedFileType: '',
-    search: ''
+    uploadDateFrom: initFilters.uploadDateFrom && '',
+    uploadDateTo: initFilters.uploadDateTo && '',
+    selectedFileType: initFilters.selectedFileType && '',
+    search: initFilters.search && '',
     // Another filters
   });
 
@@ -54,6 +54,10 @@ const TopNavbar = ({ handleFilterSubmit,selectedDepartment, needToClear }) => {
     setFilters(newFilters);
     debouncedSearch(newFilters);
   };
+
+  useEffect( () => {
+    console.log('filters changed ==>',filters);
+  },[filters]);
 
   
   const handleApplyFilters = (newFilters) => {
@@ -78,6 +82,7 @@ const TopNavbar = ({ handleFilterSubmit,selectedDepartment, needToClear }) => {
   useEffect(() => {
     if (needToClear) {
       clearSearchQuery();
+      setFilters({ ...filters, ...initFilters, selectedFileType:null});
     }
   }, [needToClear]);
   
@@ -120,7 +125,7 @@ const TopNavbar = ({ handleFilterSubmit,selectedDepartment, needToClear }) => {
               <Modal.Title>Filter Files</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <FilterForm handleFilterSubmit={handleFilterSubmit} initFilters={filters} handleApplyFilters={handleApplyFilters}/>
+              <FilterForm handleFilterSubmit={handleFilterSubmit} initFilters={initFilters} handleApplyFilters={handleApplyFilters}/>
             </Modal.Body>
           </Modal>
         </Navbar.Collapse>

@@ -168,7 +168,12 @@ function App() {
 
   return (
     <>
-      <TopNavbar handleFilterSubmit={handleFilterSubmit} selectedDepartment={fetchConfig.department} needToClear={needToClear}/>
+      <TopNavbar 
+      handleFilterSubmit={handleFilterSubmit} 
+      selectedDepartment={fetchConfig.department} 
+      initFilters={fetchConfig}
+      needToClear={needToClear} 
+      />
       <Container fluid>
         <Row>
           <Col xxl={2} >
