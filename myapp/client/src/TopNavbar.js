@@ -56,13 +56,13 @@ const TopNavbar = ({ handleFilterSubmit,selectedDepartment, needToClear,initFilt
   };
 
   useEffect( () => {
-    console.log('filters changed ==>',filters);
+    //console.log('filters changed ==>',filters);
   },[filters]);
 
   
   const handleApplyFilters = (newFilters) => {
     setFilters({ ...filters, ...newFilters });
-    console.log('newFilters: ',{...filters, ...newFilters})
+    //console.log('newFilters: ',{...filters, ...newFilters})
     handleFilterSubmit(newFilters);
     handleCloseFilterModal();
   };

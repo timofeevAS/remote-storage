@@ -26,7 +26,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
   const [isAscending, setIsAscending] = useState(true); // State to track sorting order
   const [sortParam, setSortParam] = useState('date'); // Default sort params by date
   const [userFolder, setUserFolder] = useState(null);
-  const [folderHistory,setFolderHistory] = useState([{id:'',}]); // stack for storage history
+  const [folderHistory,setFolderHistory] = useState([{id:'',name:'home'}]); // stack for storage history
   const [userDepartment, setUserDepartment] = useState(null);
   const [showCreateFolderForm, setShowCreateFolderForm] = useState(false);// State for file create modal
   
@@ -327,9 +327,28 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
   const headerTitle = () => {
     {/* This method concat mostDepartment and currentFolder */}
     var result = ''
-    result += userDepartment;
-    result += " " + (userFolder !== null ? userFolder.name.toUpperCase() : " ");
+    result += userDepartment + " ";
+    // Make folder listing
+    //result += " " + (userFolder !== null ? userFolder.name.toUpperCase() : " ");
     return result;
+  }
+
+  const folderTitle = () => {
+    {/* Method to make folder path */}
+    if(folderHistory.length < 2){
+      return;
+    }
+
+    return (
+      <span>
+       {folderHistory.map((folder, index) => (
+        <span key={folder.id}>
+          {index > 0 && <span> / </span>}
+          <span onClick={() => navigateToFolder(folder)}>{folder.name}</span>
+        </span>
+      ))}
+      </span>
+    )
   }
 
   const handleBackFolder = () => {
@@ -341,6 +360,16 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
     setFolderHistory((prevHistory) => prevHistory.slice(0, -1));
   }
 
+  const navigateToFolder = (folder) => {
+    const index = folderHistory.findIndex((f) => f.id === folder.id);
+
+    if (index !== -1) {
+      const newHistory = folderHistory.slice(0, index + 1);
+      handleClickFolder(folder);
+      setFolderHistory(newHistory);
+    }
+  }
+
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         <Container>
@@ -348,7 +377,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
               <Card.Body>
                 <div style ={{ position:'absolute',right:'45px',top:'5px',color: infoButtonClicked ? 'lightblue' : 'black'}}> <FontAwesomeIcon icon={faInfoCircle} onClick={handleInfoClick} /> </div>
                 <div style ={{ position:'absolute',right:'15px',top:'5px'}}> <FontAwesomeIcon icon={currentIcon} onClick={handleIconClick}/> </div>
-                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5> {headerTitle()} {userFolder !== '' && userFolder !== null && <FontAwesomeIcon icon={faUndo} onClick={handleBackFolder} />}  </h5></div>
+                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5> {headerTitle()} {folderTitle()} {userFolder !== '' && userFolder !== null && <FontAwesomeIcon icon={faUndo} onClick={handleBackFolder} />}  </h5></div>
                 <div style ={{ position:'absolute',right:'75px',top:'5px'}} onClick={handleSortClick} > {isAscending ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />}</div>
                 <div style ={{ position:'absolute',right:'100px',top:'2px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'name' ? 'name' : 'date'}</Button></div>
                 
