@@ -1,11 +1,13 @@
 import React, { useState,useEffect } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import { useCookies } from 'react-cookie'
 
 function CreateFolder({ parentFolderId, onCreate }) {
   const [showModal, setShowModal] = useState(false);
   const [folderName, setFolderName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [responseMessage,setResponseMessage] = useState("");
+  const [cookies] = useCookies(['csrfToken']); // cookies 
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -21,6 +23,7 @@ function CreateFolder({ parentFolderId, onCreate }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-CSRF-Token": cookies.csrfToken,
         },
         body: JSON.stringify({
           name: folderName,

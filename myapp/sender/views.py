@@ -19,42 +19,7 @@ def user_files(request):
     """
     View render for upload and download files into site.
     """
-    success_message = None
-    my_files = MyFile.objects.all()
-    form = FileUploadForm()
-    if request.method == 'POST':
-        form = FileUploadForm(request.POST, request.FILES)
-
-        superuser = get(is_superuser=True, username='admin')
-
-        if form.is_valid():
-            file = request.FILES.get('file')
-            try:
-                obj, created = MyFile.objects.update_or_create(
-                    file=file,
-                    name=file.name,
-                    size=file.size,
-                    owner=superuser)
-                success_message = 'Файл загружен'
-            except:
-                success_message = 'Ошибка загрузки файла'
-        else:
-            success_message = form.errors['file']
-
-            # Save session and remove post data
-            request.session['success_message'] = success_message
-            request.POST = request.POST.copy()  # Copy data of request
-            request.POST.clear()  # Clear POST data
-
-            # Redirect with PRG ???
-            # Need to find more about PRG.
-            return HttpResponseRedirect(request.path_info)
-
-    # Get session status from request
-    if 'success_message' in request.session:
-        success_message = request.session.pop('success_message')
-
-    return render(request, 'files.html', {'success_message': success_message, 'files': my_files, 'form': form})
+    return render(request, 'files.html')
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -113,6 +78,14 @@ class FolderSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(f'Can\'t create folder. Internal Error {e}')
 
         return folder
+
+    def update(self, instance, validated_data):
+        # Get new name from validated data
+        new_name = validated_data.get('name')
+
+        instance.name = new_name
+        instance.save()
+        return instance
 
 class FolderCreateSerializer(serializers.ModelSerializer):
     """
@@ -428,6 +401,16 @@ class FolderView(APIView):
                             status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        folder = self.get_object(pk)
+        print(request.data)
+        serializer = FolderSerializer(folder, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FolderDetailGeneric(generics.RetrieveAPIView):

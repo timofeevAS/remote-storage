@@ -55,6 +55,7 @@ function App() {
     
   }
 
+
   const handleClearFilters = (maybeDepartment = null) => {
     {/* Method to clear filters */}
     setFetchConfig({
@@ -166,6 +167,8 @@ function App() {
       });
   }
 
+
+
   return (
     <>
       <TopNavbar 
@@ -203,7 +206,7 @@ function App() {
               {/* Details of files if it has chosen  */}
               {fileDetailsVisible != false && (
                 <>
-                  {<FileDetailsCanvas file={selectedFile} setFileDetailsVisible={setFileDetailsVisible} setSelectedFile={setSelectedFile} setInfoButtonState={setInfoButtonState} handleUploadSuccess={()=>handleUploadSuccess()}/>}
+                  {<FileDetailsCanvas file={selectedFile === null ? -1 : selectedFile} setFileDetailsVisible={setFileDetailsVisible} setSelectedFile={setSelectedFile} setInfoButtonState={setInfoButtonState} handleUploadSuccess={()=>handleUploadSuccess()}/>}
                 </>
               )}
             </div>
