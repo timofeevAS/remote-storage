@@ -8,6 +8,7 @@ import CreateFolder from "./CreateFolder"
 import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown, faXmark, faUndo} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { filter } from "lodash";
+import { useCookies } from 'react-cookie'
 
 const fileData1 = [
   { id: '1', name: 'File 1', extension: 'txt', size: '1mb', url: 'https://example.com/file1.txt' },
@@ -29,7 +30,9 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
   const [folderHistory,setFolderHistory] = useState([{id:'',name:'home'}]); // stack for storage history
   const [userDepartment, setUserDepartment] = useState(null);
   const [showCreateFolderForm, setShowCreateFolderForm] = useState(false);// State for file create modal
-  
+  const [cookies] = useCookies(['csrfToken']); // cookies
+
+
   const handleCreateFolder = () => {
     {/* showing modal for create folder */}
     setShowCreateFolderForm(true);
@@ -168,6 +171,9 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
         const response = await fetch("http://localhost:8000/users/files/", {
           method: "POST",
           body: formData,
+          headers:{
+          "X-CSRF-Token": cookies.csrfToken,
+          }
         });
   
         // Handle other status codes if needed

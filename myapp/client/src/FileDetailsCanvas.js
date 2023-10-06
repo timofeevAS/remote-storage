@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import { Button, Offcanvas,Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil,faCheck,faDownload } from '@fortawesome/free-solid-svg-icons';
+import { useCookies } from 'react-cookie'
 
 
 
@@ -10,6 +11,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
   const [editMode, setEditMode] = useState(false);
   const [editedName, setEditedName] = useState(file ? file.name : "");
   const [fileMode, setFileMode] = useState(false);
+  const [cookies] = useCookies(['csrfToken']); // cookies
   console.log(file);
   
   useEffect( () => {
@@ -37,6 +39,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "X-CSRF-Token": cookies.csrfToken,
           },
         });
         if (response.status === 200) {
@@ -88,6 +91,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": cookies.csrfToken,
       },
       body: JSON.stringify(updatedFile),
     });

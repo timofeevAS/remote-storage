@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useCookies } from 'react-cookie'
+
 
 export default function UploadForm({ handleUploadSuccess, dep,folder }) {
   const { register, handleSubmit } = useForm();
   const [responseMessage, setResponseMessage] = useState("");
+  const [cookies] = useCookies(['csrfToken']); // cookies
 
   
 
@@ -23,6 +26,9 @@ export default function UploadForm({ handleUploadSuccess, dep,folder }) {
     const res = await fetch("http://localhost:8000/users/files/", {
       method: "POST",
       body: formData,
+      headers: {
+        "X-CSRF-Token": cookies.csrfToken,
+      }
     }).then((res) => {
       if (res.status === 201) {
         handleUploadSuccess(); // Вызываем функцию при успешном создании
