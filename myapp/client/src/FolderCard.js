@@ -3,16 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import { Card } from 'react-bootstrap';
 import ContextMenu from "./ContextMenu";
-
-
-
-function truncateText(text, maxLength) {
-  if (text.length <= maxLength) {
-    return text;
-  } else {
-    return text.substring(0, maxLength) + "...";
-  }
-}
+import truncateText from "./helpers/truncateText";
 
 
 function FolderCard({ folder, handleMenuClick, openMenu, handleMenuItemClick, handleCardClick, isSelected, handleClickFolder, setFolderHistory}) {
@@ -86,7 +77,7 @@ function FolderCard({ folder, handleMenuClick, openMenu, handleMenuItemClick, ha
       transition: "background-color 0.3s",
      }}>
       <Card.Body className="d-flex flex-column align-items-center justify-content-center">
-        <Card.Title style={{ fontSize: '20px', position: 'relative', top: '15px' }}>
+        <Card.Title style={{ fontSize: '20px', position: 'relative', top: '5px' }}>
           {truncateText(folder.name,11)}
         </Card.Title>
       </Card.Body>

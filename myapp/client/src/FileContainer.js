@@ -2,19 +2,17 @@ import React, { useState,useEffect,useMemo } from "react";
 import { Container, Row, Col, Navbar, Nav, Card, Button } from 'react-bootstrap';
 import FileCard from "./FileCard";
 import FolderCard from './FolderCard';
+import FolderLine from './FolderLine';
 import FileLine from "./FileLine";
 import CreateFolder from "./CreateFolder"
+import FileCardPlaceHolder from "./FileCardPlaceHolder";
 import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown, faXmark, faUndo} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { filter } from "lodash";
+import { useCookies } from 'react-cookie'
+import FileLinePlaceHolder from "./FileLinePlaceHolder";
 
-const fileData1 = [
-  { id: '1', name: 'File 1', extension: 'txt', size: '1mb', url: 'https://example.com/file1.txt' },
-  { id: '2', name: 'File 2', extension: 'pdf', size: '1mb', url: 'https://example.com/file2.pdf' },
-  { id: '3', name: 'File 3', extension: 'jpg', size: '1mb', url: 'https://example.com/file3.jpg' },
-  { id: '4', name: 'File 4', extension: 'docx', size: '1mb', url: 'https://example.com/file4.docx' },
-  { id: '5', name: 'a', extension: 'txt', size: '1mb', url: 'https://example.com/file1.txt' },
-];
+
 
 
 function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSuccess, setCurrentSort, infoButtonClicked, setInfoButtonState,filterConfig, clearFilters, handleClickFolder }) {
@@ -25,10 +23,12 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
   const [isAscending, setIsAscending] = useState(true); // State to track sorting order
   const [sortParam, setSortParam] = useState('date'); // Default sort params by date
   const [userFolder, setUserFolder] = useState(null);
-  const [folderHistory,setFolderHistory] = useState([{id:'',}]); // stack for storage history
+  const [folderHistory,setFolderHistory] = useState([{id:'',name:'home'}]); // stack for storage history
   const [userDepartment, setUserDepartment] = useState(null);
   const [showCreateFolderForm, setShowCreateFolderForm] = useState(false);// State for file create modal
-  
+  const [cookies] = useCookies(['csrfToken']); // cookies
+
+
   const handleCreateFolder = () => {
     {/* showing modal for create folder */}
     setShowCreateFolderForm(true);
@@ -167,6 +167,9 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
         const response = await fetch("http://localhost:8000/users/files/", {
           method: "POST",
           body: formData,
+          headers:{
+          "X-CSRFToken": cookies.csrfToken,
+          }
         });
   
         // Handle other status codes if needed
@@ -230,10 +233,23 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
 
   
   const fileCards = useMemo(() => {
+    if(!fileData || fileData.length === 0 || fileData[0]===null){
+      return fileData.map((_, index) => (
+        <Col key={index}>
+          {currentIcon === faList ? (
+            <FileCardPlaceHolder/>
+          ) : (
+            <FileLinePlaceHolder/>
+          )}
+        </Col>
+      ));
+    }
+
     return fileData.map((file, index) => (
-      <Col key={index} md={2} >
+      <Col key={index}>
         {currentIcon === faList ? (
           <FileCard 
+            style={{ flex: '0 0 20%', margin: '10px' }}
             file={file} 
             handleMenuClick={handleMenuClick} 
             openMenu={openMenu} 
@@ -243,10 +259,13 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
           />
         ) : (
           <FileLine 
+            style={{ flex: '0 0 20%', margin: '10px' }}
             file={file} 
             handleMenuClick={handleMenuClick} 
             openMenu={openMenu} 
-            handleMenuItemClick={handleMenuItemClick} 
+            handleMenuItemClick={handleMenuItemClick}
+            handleCardClick={(card) => handleCardClick(card)}
+            isSelected={file === selectedFileCard}
           />
         )}
       </Col>
@@ -256,8 +275,9 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
 
   const folderCards = useMemo(() => {
     return folderData.map((folder, index) => (
-      <Col key={index} md={2}>
+      <Col key={index}>
         {/* Folder cards using with useMemo */}
+        {currentIcon === faList ? (
         <FolderCard
           folder={folder}
           handleMenuClick={handleMenuClick}
@@ -267,8 +287,23 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
           isSelected={folder === selectedFileCard}
           handleClickFolder={handleClickFolder}
           setFolderHistory={setFolderHistory}
-        />
+          style={{ flex: '0 0 20%', margin: '10px' }}
+        />) : (
+          <FolderLine
+          folder={folder}
+          handleMenuClick={handleMenuClick}
+          openMenu={openMenu}
+          handleMenuItemClick={handleMenuItemClick}
+          handleCardClick={handleCardClick}
+          isSelected={folder === selectedFileCard}
+          handleClickFolder={handleClickFolder}
+          setFolderHistory={setFolderHistory}
+          style={{ flex: '0 0 20%', margin: '10px' }}   
+          />
+        )}
       </Col>
+
+      
     ));
   }, [folderData, currentIcon, openMenu, handleMenuClick, handleMenuItemClick, handleCardClick, selectedFileCard]);
 
@@ -306,9 +341,28 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
   const headerTitle = () => {
     {/* This method concat mostDepartment and currentFolder */}
     var result = ''
-    result += userDepartment;
-    result += " " + (userFolder !== null ? userFolder.name.toUpperCase() : " ");
+    result += userDepartment + " ";
+    // Make folder listing
+    //result += " " + (userFolder !== null ? userFolder.name.toUpperCase() : " ");
     return result;
+  }
+
+  const folderTitle = () => {
+    {/* Method to make folder path */}
+    if(folderHistory.length < 2){
+      return;
+    }
+
+    return (
+      <span>
+       {folderHistory.map((folder, index) => (
+        <span key={folder.id}>
+          {index > 0 && <span> / </span>}
+          <span onClick={() => navigateToFolder(folder)}>{folder.name}</span>
+        </span>
+      ))}
+      </span>
+    )
   }
 
   const handleBackFolder = () => {
@@ -320,14 +374,24 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
     setFolderHistory((prevHistory) => prevHistory.slice(0, -1));
   }
 
+  const navigateToFolder = (folder) => {
+    const index = folderHistory.findIndex((f) => f.id === folder.id);
+
+    if (index !== -1) {
+      const newHistory = folderHistory.slice(0, index + 1);
+      handleClickFolder(folder);
+      setFolderHistory(newHistory);
+    }
+  }
+
   return (
-    <div >
+    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         <Container>
             <Card style={{outline:'none',border:'none', margin:'5px'}}>
               <Card.Body>
                 <div style ={{ position:'absolute',right:'45px',top:'5px',color: infoButtonClicked ? 'lightblue' : 'black'}}> <FontAwesomeIcon icon={faInfoCircle} onClick={handleInfoClick} /> </div>
                 <div style ={{ position:'absolute',right:'15px',top:'5px'}}> <FontAwesomeIcon icon={currentIcon} onClick={handleIconClick}/> </div>
-                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5> {headerTitle()} {userFolder !== '' && userFolder !== null && <FontAwesomeIcon icon={faUndo} onClick={handleBackFolder} />}  </h5></div>
+                <div style ={{ position:'absolute',left:'15px',top:'5px'}}> <h5> {headerTitle()} {folderTitle()} {userFolder !== '' && userFolder !== null && <FontAwesomeIcon icon={faUndo} onClick={handleBackFolder} />}  </h5></div>
                 <div style ={{ position:'absolute',right:'75px',top:'5px'}} onClick={handleSortClick} > {isAscending ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />}</div>
                 <div style ={{ position:'absolute',right:'100px',top:'2px'}}><Button onClick={handleSortParamChange} size="sm" variant="outline-dark">{sortParam === 'name' ? 'name' : 'date'}</Button></div>
                 
@@ -342,12 +406,18 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
             </Card>
             
         </Container>
+
+
+
+
+
       <Container 
       onDragOver={handleDragOver}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       style = {{
+          minHeight: `${(fileData.length * 100) % 800}px`,
           maxHeight: '800px',
           overflowY: 'auto',
           backgroundColor: draggingFile ? '#9fc5e8' : 'transparent',
@@ -363,7 +433,10 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
           />
         )}
         </h6>
-        <Row className="">{folderCards}{fileCards}</Row>
+        <Row className="" style={{ display: 'flex', flexWrap: 'wrap' }}>
+          {folderCards}
+          {fileCards}
+        </Row>
       </Container>
     </div>
   );

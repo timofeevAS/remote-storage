@@ -7,8 +7,23 @@ from django.core.management.base import BaseCommand
 from django.core.files import File
 
 from pathlib import Path
-from sender.models import MyFile, Task, Department
+from sender.models import MyFile, Task, Department, Folder
 
+
+def rootfolder():
+    """
+    Getting root folder
+    """
+    if not Folder.objects.first():
+        folder, created = Folder.objects.update_or_create(
+            name='root',
+            owner=adminuser(),
+        )
+        if created:
+            print('Create root folder')
+            return folder
+    else:
+        return Folder.objects.first().get_root()
 
 def random_word(length):
     """
@@ -18,6 +33,9 @@ def random_word(length):
     return ''.join(random.choice(letters) for i in range(length))
 
 def adminuser():
+    """
+    Getting adminuser
+    """
     try:
         user_admin = User.objects.all()[0]
     except IndexError:
@@ -41,8 +59,8 @@ def testtask():
 
 def depratments():
     """
-        Create or update departments
-        """
+    Create or update departments
+    """
 
     storage_deps = []
     names = ['it', 'hr', 'other']
@@ -100,7 +118,7 @@ def populate_database(num_entries):
     Filling database
     """
     print('drop here')
-
+    root_folder = rootfolder()
     parent_file = testfile()
     departs = depratments()
     task = testtask()

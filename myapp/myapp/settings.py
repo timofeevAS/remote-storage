@@ -56,6 +56,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_SECURE = False
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
@@ -72,7 +74,6 @@ CORS_ALLOW_METHODS = [
     'GET',
     'POST',
     'PUT',
-
 ]
 
 
