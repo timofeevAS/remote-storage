@@ -1,44 +1,81 @@
 # Remote-storage
-This project implement storaging (local yet) files with Django 4.1.
+This project implement storaging files with Django 4.1 and React 18.x.
 
-## Installation
-To install and run project open terminal:
+![remotestorage.gif](./remotestorage.gif)
 
-Set up virtual enviroment:
-```commandline
+## Feature
+* File uploading
+* Folder creating
+* Drag n drop
+* Mobile adaptive
+* Searching (*debounced*), filtering
+
+## Dependecies
+* Python >=3.11
+* Django >=4.1
+* React >=18.0
+* npm
+
+## Build python
+
+### Linux
+
+```bash
+git clone https://github.com/timofeevAS/remote-storage
+cd ./remote-storage
 python -m venv .venv
+cd ./.venv/Scripts
+./activate
+cd ../..
 ```
-Activate .venv with `./.venv/Scripts/activate`
 
-Set up requirements:
-```commandline
-cd .\myapp\
+### Windows
+
+```bash
+git clone https://github.com/timofeevAS/remote-storage
+cd remote-storage
+python -m venv .venv
+cd .venv\Scripts
+activate
+cd ..\..
+```
+
+**Next step requirements:**
+
+```bash
 pip install -r requirements.txt
 ```
 
-```
+**Configure backend:**
+```bash
+cd myapp
 python manage.py makemigrations sender
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py data_gen
 ```
+Waiting a little and your backend will be configured with output:
 
-## To manage frontend:
-1. Install Node.js `https://nodejs.org`
-```
-cd .\myapp\
+`Data generation complete`
+
+
+**Configure frontend**
+
+0. You can easily install [Node.js](https://nodejs.org) and follow next step
+
+**Open terminal in your directory (remote-storage):**
+```bash
+cd myapp
 npm install
-```
-After agree with other installings.
-
-```
 npm run dev
 ```
+**Execute process with `CTRL+C` and type `Yes`**
+
+```bash
+python manage.py 8000
+```
+
 
 ## Let's launch:
-Open new terminal, after this type:
-```commandline
-python manage.py runserver
-```
-http://localhost:8000 - your site available
-http://localhost:8000/users/files/upload_page - your docs page
+Visit site: `http://127.0.0.1:8000`
+For look admin panel: `http//127.0.0.1:8000/admin`

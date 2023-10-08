@@ -233,7 +233,17 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
 
   
   const fileCards = useMemo(() => {
-    if(!fileData || fileData.length === 0 || fileData[0]===null){
+    if(fileData.length === 0){
+      return  (
+        <Col key={0}>
+          <div className="centerize">
+            <h2>Здесь еще нет файлов</h2>
+          </div>
+        </Col>
+      );
+    }
+
+    if(!fileData || fileData[0]===null){
       return fileData.map((_, index) => (
         <Col key={index}>
           {currentIcon === faList ? (

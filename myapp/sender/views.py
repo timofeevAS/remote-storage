@@ -364,7 +364,54 @@ class FileListSizeView(APIView):
     """
 
     def get(self, request):
-        return Response({'size': len(MyFile.objects.all())}, status=status.HTTP_200_OK)
+        # All files
+        files = MyFile.objects.all()
+        folder = Folder.objects.first().get_root()
+
+        # Get params from request
+        department_param = request.GET.get('department', None)
+        search_name = request.GET.get('search', None)
+        upload_date_from = request.GET.get('uploadDateFrom', None)
+        upload_date_to = request.GET.get('uploadDateTo', None)
+        extensions = request.GET.get('selectedFileType', None)
+        folder_id = request.GET.get('folder', None)
+
+        # Match department from params
+        if department_param is not None:
+            try:
+                department = Department(Department.objects.get(name=department_param))
+            except Department.DoesNotExist:
+                return Response({'error': f'Current department doesn\'t exists ({department_param})'})
+            files = files.filter(department=department.pk)
+
+        # Match files with name from param
+        if search_name is not None:
+            print(f'{search_name} - search query')
+            search_regex = re.compile(rf'\b\w*{search_name}\w*\b', re.IGNORECASE)
+            q_objects = Q()  # Empty Q-object
+
+            for file in files:
+                if search_regex.match(file.name):
+                    q_objects |= Q(pk=file.pk)  # Conditions for correct files
+            if len(q_objects) == 0:
+                files = MyFile.objects.none()
+            else:
+                files = files.filter(q_objects)  # Filter QuerySet
+
+        # Match files with upload date
+
+        # Match Folder with other files
+        if folder_id is not None:
+            files = files.filter(folder=folder_id)
+        else:
+            files = files.filter(folder=None)
+
+        print(len(files))
+        response_data = {
+            'size': len(files)
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class DepartmentViewList(APIView):
