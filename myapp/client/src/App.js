@@ -43,7 +43,12 @@ function App() {
 
   useEffect(() => {
     // Request for getting size of file list
-    fetch("http://127.0.0.1:8000/users/files/size")
+    const queryString = Object.keys(fetchConfig)
+      .filter(key => fetchConfig[key] !== null && fetchConfig[key] !== '')
+      .map(key => `${key}=${fetchConfig[key]}`)
+      .join('&');
+  
+    fetch(`http://127.0.0.1:8000/users/files/size/?${queryString}`)
       .then((response) => response.json())
       .then((data) => {
         const numberOfFiles = data.size;

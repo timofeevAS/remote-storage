@@ -1,7 +1,7 @@
 {
-  "name": "djangogantt",
+  "name": "remote-storage",
   "version": "1.0.0",
-  "description": "",
+  "description": "Remote storage for files ",
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,15 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sndkonstantin/DjangoGantt.git"
+    "url": "git+https://github.com/timofeevAS/remote-storage"
   },
   "keywords": [],
-  "author": "",
+  "author": "Timofeev Alexandr",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sndkonstantin/DjangoGantt/issues"
+    "url": "https://github.com/timofeevAS/remote-storage"
   },
-  "homepage": "https://github.com/sndkonstantin/DjangoGantt#readme",
+  "homepage": "https://github.com/timofeevAS/remote-storage#readme",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
