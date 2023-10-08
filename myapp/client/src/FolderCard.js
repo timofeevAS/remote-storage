@@ -77,7 +77,7 @@ function FolderCard({ folder, handleMenuClick, openMenu, handleMenuItemClick, ha
       transition: "background-color 0.3s",
      }}>
       <Card.Body className="d-flex flex-column align-items-center justify-content-center">
-        <Card.Title style={{ fontSize: '20px', position: 'relative', top: '15px' }}>
+        <Card.Title style={{ fontSize: '20px', position: 'relative', top: '5px' }}>
           {truncateText(folder.name,11)}
         </Card.Title>
       </Card.Body>

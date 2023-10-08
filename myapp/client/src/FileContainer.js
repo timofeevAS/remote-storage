@@ -406,12 +406,18 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
             </Card>
             
         </Container>
+
+
+
+
+
       <Container 
       onDragOver={handleDragOver}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       style = {{
+          minHeight: `${(fileData.length * 100) % 800}px`,
           maxHeight: '800px',
           overflowY: 'auto',
           backgroundColor: draggingFile ? '#9fc5e8' : 'transparent',
