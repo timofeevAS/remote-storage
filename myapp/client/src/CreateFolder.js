@@ -23,7 +23,7 @@ function CreateFolder({ parentFolderId, onCreate }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-Token": cookies.csrfToken,
+          "X-CSRFToken": cookies.csrfToken,
         },
         body: JSON.stringify({
           name: folderName,

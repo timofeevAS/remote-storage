@@ -27,7 +27,7 @@ export default function UploadForm({ handleUploadSuccess, dep,folder }) {
       method: "POST",
       body: formData,
       headers: {
-        "X-CSRF-Token": cookies.csrfToken,
+        "X-CSRFToken": cookies.csrfToken,
       }
     }).then((res) => {
       if (res.status === 201) {

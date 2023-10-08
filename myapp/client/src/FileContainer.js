@@ -5,18 +5,14 @@ import FolderCard from './FolderCard';
 import FolderLine from './FolderLine';
 import FileLine from "./FileLine";
 import CreateFolder from "./CreateFolder"
+import FileCardPlaceHolder from "./FileCardPlaceHolder";
 import { faList, faTh,faInfoCircle, faArrowUp, faArrowDown, faXmark, faUndo} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { filter } from "lodash";
 import { useCookies } from 'react-cookie'
+import FileLinePlaceHolder from "./FileLinePlaceHolder";
 
-const fileData1 = [
-  { id: '1', name: 'File 1', extension: 'txt', size: '1mb', url: 'https://example.com/file1.txt' },
-  { id: '2', name: 'File 2', extension: 'pdf', size: '1mb', url: 'https://example.com/file2.pdf' },
-  { id: '3', name: 'File 3', extension: 'jpg', size: '1mb', url: 'https://example.com/file3.jpg' },
-  { id: '4', name: 'File 4', extension: 'docx', size: '1mb', url: 'https://example.com/file4.docx' },
-  { id: '5', name: 'a', extension: 'txt', size: '1mb', url: 'https://example.com/file1.txt' },
-];
+
 
 
 function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSuccess, setCurrentSort, infoButtonClicked, setInfoButtonState,filterConfig, clearFilters, handleClickFolder }) {
@@ -172,7 +168,7 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
           method: "POST",
           body: formData,
           headers:{
-          "X-CSRF-Token": cookies.csrfToken,
+          "X-CSRFToken": cookies.csrfToken,
           }
         });
   
@@ -237,6 +233,18 @@ function FileContainer({ handleSelectedFile, fileData,folderData, handleUploadSu
 
   
   const fileCards = useMemo(() => {
+    if(!fileData || fileData.length === 0 || fileData[0]===null){
+      return fileData.map((_, index) => (
+        <Col key={index}>
+          {currentIcon === faList ? (
+            <FileCardPlaceHolder/>
+          ) : (
+            <FileLinePlaceHolder/>
+          )}
+        </Col>
+      ));
+    }
+
     return fileData.map((file, index) => (
       <Col key={index}>
         {currentIcon === faList ? (

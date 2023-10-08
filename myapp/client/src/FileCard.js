@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import { Card } from 'react-bootstrap';
 import ContextMenu from "./ContextMenu";
+import truncateText from "./helpers/truncateText"
+import FileCardPlaceHolder from "./FileCardPlaceHolder";
 
 function getColorByExtension(extension) {
   switch (extension) {
@@ -19,18 +21,18 @@ function getColorByExtension(extension) {
   }
 }
 
-function truncateText(text, maxLength) {
-  if (text.length <= maxLength) {
-    return text;
-  } else {
-    return text.substring(0, maxLength) + "...";
-  }
-}
+
 
 
 function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handleCardClick, isSelected }) {
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   
+  if(!file){
+    return (
+      <FileCardPlaceHolder />
+    );
+  }
+
   const handleContextMenu = (event) => {
     event.preventDefault();
 
@@ -67,6 +69,7 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
 
   const apiUrl = 'http://127.0.0.1:8000'
   return (
+    <div className="d-flex justify-content-around">
     <Card onContextMenu={handleContextMenu} onClick={handleClick} style=
     {{ 
       width: '180px', 
@@ -76,7 +79,7 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
       marginBottom: '30px',
       userSelect: "auto",
       transition: "background-color 0.3s",
-     }}>
+     }} >
       <Card.Body className="d-flex flex-column align-items-center justify-content-center">
         <Card.Title style={{ fontSize: '20px', position: 'relative', top: '15px' }}>
           {truncateText(file.name,11)}
@@ -102,6 +105,7 @@ function FileCard({ file, handleMenuClick, openMenu, handleMenuItemClick, handle
       </Card.Text>
       
     </Card>
+    </div>
   );
 }
 

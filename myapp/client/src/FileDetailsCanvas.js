@@ -39,7 +39,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-Token": cookies.csrfToken,
+            "X-CSRFToken": cookies.csrfToken,
           },
         });
         if (response.status === 200) {
@@ -91,7 +91,7 @@ const FileDetailsCanvas = ({ file, setSelectedFile,setFileDetailsVisible, setInf
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRF-Token": cookies.csrfToken,
+        "X-CSRFToken": cookies.csrfToken,
       },
       body: JSON.stringify(updatedFile),
     });

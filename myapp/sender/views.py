@@ -57,9 +57,10 @@ class FolderSerializer(serializers.ModelSerializer):
     Serializer for Folder
     """
     owner = OwnerSerializer()
+
     class Meta:
         model = Folder
-        fields = ['id', 'name', 'owner','created_at']
+        fields = ['id', 'name', 'owner', 'created_at']
 
     def create(self, validated_data):
         superuser = User.objects.filter(is_superuser=True).first()
@@ -87,10 +88,12 @@ class FolderSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class FolderCreateSerializer(serializers.ModelSerializer):
     """
     Serializer for Folder
     """
+
     class Meta:
         model = Folder
         fields = ['id', 'name', 'parent']
@@ -148,13 +151,11 @@ class FileUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyFile
-        fields = ['file', 'name', 'department','folder']
+        fields = ['file', 'name', 'department', 'folder']
 
     def create(self, validated_data):
         superuser = User.objects.all()[0]
         name = validated_data.get('name')
-
-
 
         if name == '':
             if 'file' in validated_data:
@@ -355,6 +356,15 @@ class FileUpdateView(APIView):
         file = self.get_object(pk)
         serializer = FileListSerializer(file, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FileListSizeView(APIView):
+    """
+    View for get counts of file
+    """
+
+    def get(self, request):
+        return Response({'size': len(MyFile.objects.all())}, status=status.HTTP_200_OK)
 
 
 class DepartmentViewList(APIView):

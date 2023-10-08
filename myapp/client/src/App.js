@@ -12,7 +12,7 @@ function App() {
   const [fileDetailsVisible, setFileDetailsVisible] = useState(false); // Currency state of fileDetails
   const [fileData, setFileData] = useState([]);
   const [folderData, setFolderData] = useState([]);
-  
+  const [isLoading, setIsLoading] = useState(true); // State of loading data
   const [fetchConfig, setFetchConfig] = useState({
     department:null,
     search:null,
@@ -34,16 +34,39 @@ function App() {
   { /*Output current fetch configuration*/ }
   //console.log('Current fetch config  ===>',fetchConfig);
   
-
-  const resetStateWhileFetch = () => {
-    {/* This method reset state when we switch fetch */}
-  }
   useEffect(() => {
     {/* Reset states */}
     setSelectedFile(-1);
     setFileDetailsVisible(false);
     setInfoButtonState(false);
   }, [fetchConfig]); 
+
+  useEffect(() => {
+    // Request for getting size of file list
+    fetch("http://127.0.0.1:8000/users/files/size")
+      .then((response) => response.json())
+      .then((data) => {
+        const numberOfFiles = data.size;
+        // Make placeholders array
+        const placeholders = Array.from({ length: numberOfFiles }, () => null);
+        console.log(numberOfFiles);
+        setFileData(placeholders); 
+        setIsLoading(false); 
+      })
+      .catch((error) => {
+        console.error("Error fetching file count:", error);
+      });
+  }, [fetchConfig]);
+
+  useEffect(() => {
+    {/* Update fetch data, when fetchConfig edit */}
+    fetchFileData();
+  }, [fetchConfig]); 
+
+  useEffect(() => {
+    {/* Update data with sorting when sort config update */}
+    handleSortFiles(currentSort,fileData);
+  }, [currentSort]); 
 
   const handleClickFolder = (folder) => {
     {/* Method to handle double click on folder card and fetch new data */}
@@ -110,15 +133,7 @@ function App() {
     file === -1 ? setFileDetailsVisible(false) : setFileDetailsVisible(true);
   };
 
-  useEffect(() => {
-    {/* Update fetch data, when fetchConfig edit */}
-    fetchFileData();
-  }, [fetchConfig]); 
 
-  useEffect(() => {
-    {/* Update data with sorting when sort config update */}
-    handleSortFiles(currentSort,fileData);
-  }, [currentSort]); 
 
 
   const fetchFileData = () => {
@@ -168,7 +183,7 @@ function App() {
   }
 
 
-
+  console.log(fileData);
   return (
     <>
       <TopNavbar 
