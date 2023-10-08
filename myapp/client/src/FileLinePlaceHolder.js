@@ -9,24 +9,22 @@ import { Placeholder } from 'react-bootstrap';
 function FileLinePlaceHolder({ file, handleMenuClick, openMenu, handleMenuItemClick, handleCardClick, isSelected }) {
 
 return (
-    <div className="d-flex justify-content-around">
-      <Card style={{
-        width: '125px', 
-    height: '30px', 
-    borderRadius: '13px', 
-    backgroundColor:"#f8f8fa", 
-    marginBottom: '30px',
-    userSelect: "auto",
-    transition: "background-color 0.3s",
-      }}>
+    <div className="d-flex justify-content-center align-items-center">
+    <Card style={{
+        width: '125px',
+        height: '30px',
+        borderRadius: '13px',
+        backgroundColor: "#f8f8fa",
+        marginBottom: '10px', 
+        userSelect: "auto",
+        transition: "background-color 0.3s",
+    }}>
         <Card.Body>
-          <Placeholder as={Card.Title} animation="glow" className="d-flex flex-column align-items-center justify-content-center" style={{position:"absolute",bottom:"0.13em",width: '4em', height: '0.2em', }}>
-            <Placeholder md={11} />
-          </Placeholder>
-          
-
+        <Placeholder as={Card.Text} animation="glow" className="d-flex justify-content-center" style={{margin:'-9px'}}>
+            <Placeholder xs={10} />
+        </Placeholder>
         </Card.Body>
-      </Card>
+    </Card>
     </div>
   );
 }
